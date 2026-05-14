@@ -378,7 +378,7 @@ else: return 1  # Recognized
 | 카드 탭 | 앞면 ↔ 뒷면 토글 | ❌ |
 | 좌 스와이프 | 이전 카드 | ❌ |
 | 우 스와이프 | 다음 카드 | ❌ |
-| 위 스와이프 | Mode 2 (Echo Writing) 진입 | ❌ (작문 결과로 업데이트) |
+| 위 스와이프 | Mode 2 (Writing Mode) 진입 | ❌ (작문 결과로 업데이트) |
 | 아래 스와이프 | 히스토리/통계/팁 패널 | ❌ |
 | 하단 평가 버튼 | 자가 평가 | ✅ `source="self_eval"` |
 
@@ -423,6 +423,10 @@ else: return 1  # Recognized
 6. **Vercel Python Functions 배포 테스트** (`/api/python/health`)
    - 의존성: langgraph + langchain-anthropic + fastapi + mangum
    - Vercel 500MB 번들 한도 검증
+   - 검증 실패 시 대안:
+     - 옵션 A: 의존성 슬림화 (langchain 제거 후 anthropic SDK 직접 호출)
+     - 옵션 B: Railway/Render 별도 호스팅 (FastAPI 서버 분리)
+     - 옵션 C: LangGraph 단순 구현 (StateGraph 최소화)
 
 ### Phase 1: 데이터 준비 (Day 2)
 1. Sec 1 단어 50개 큐레이션 (Quizlet 또는 Cambridge VP에서)
@@ -446,6 +450,9 @@ else: return 1  # Recognized
 ### Phase 4: 마무리 (Day 6)
 1. Mastery Score 통합
 2. 대시보드 (학습 진도)
+3. 세션 시작 화면 (Deck 선택 + 모드 선택)
+4. PWA 설정 (manifest.json, service worker, 홈 화면 추가)
+5. 모바일/태블릿 UI 폴리시 (터치 영역, 애니메이션, 안전 영역)
 
 ### Phase 5: 검증 (Day 7)
 1. 실제 사용자 테스트
@@ -465,8 +472,7 @@ janeduck/
 │   ├── (learn)/
 │   │   ├── deck/[deckId]/
 │   │   ├── quick-review/
-│   │   ├── echo-writing/
-│   │   └── sentence-writing/
+│   │   └── writing/
 │   ├── dashboard/
 │   └── api/
 │       ├── cards/
@@ -497,7 +503,8 @@ janeduck/
 │   │   ├── CardFront.tsx
 │   │   └── CardBack.tsx
 │   ├── Writing/
-│   │   ├── EchoWriting.tsx
+│   │   ├── WritingMode.tsx
+│   │   ├── ScaffoldPrompt.tsx
 │   │   └── FeedbackPanel.tsx
 │   └── ui/
 │
@@ -525,10 +532,10 @@ janeduck/
 
 **Phase 2-3 (Day 3-5):**
 - Mode 1: Quick Review (sub-agent A, worktree: feature/mode1)
-- Mode 2: Echo Writing (sub-agent B, worktree: feature/mode2)
+- Mode 2: Writing Mode (sub-agent B, worktree: feature/writing-mode)
 
 **Phase 4 (Day 6):**
-- Mode 3 (sub-agent A)
+- 통합/대시보드 (sub-agent A)
 - 통합/통계 대시보드 (sub-agent B)
 
 ### 메인 Claude Code의 역할
@@ -619,5 +626,5 @@ sub-agent B 완료 → 메인 검토 → main 브랜치 머지
 
 ---
 
-*Last Updated: 2026-05-14 (v2 — Writing Mode 통합, Vercel Python Functions 추가)*
+*Last Updated: 2026-05-15 (v3 — 폴더 구조·용어 정리, Vercel 대안 추가, Phase 4 보강)*
 *Maintainer: Hoon*
