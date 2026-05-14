@@ -36,28 +36,30 @@ JaneDuck은 일반 단어 앱과 본질적으로 다르다.
 
 ---
 
-## 학습 모드 3가지
+## 학습 모드 2가지
 
 ### Mode 1: Quick Review (Flashcard)
 - 단어 / 뜻 / 예문 / collocation 카드로 확인
 - 워밍업 / 단어 노출 단계
 - Involvement Load Index: 1
 
-### Mode 2: Echo Writing (핵심 차별화)
-- 모범 문장 제시 → 같은 단어로 **다른 문장** 작성
-- Variation Mission (변형 제약): 주제/시제/collocation/톤/반대상황/word family 변형
-- AI Devil's Advocate: 약점 지적 후 재작문 유도
-- Involvement Load Index: 5
+### Mode 2: Writing Mode (핵심 차별화)
+Echo Writing과 Quick Sentence Writing을 **단일 Writing Mode + scaffold_level**로 통합.
 
-### Mode 3: Quick Sentence Writing
-- 모범 문장 없이 단어 + 프롬프트만으로 직접 작성
-- 가장 높은 인지 부담
-- Involvement Load Index: 6
+| scaffold_level | 스타일 | 제공 정보 | ILI |
+|---|---|---|---|
+| high | Echo Writing | reference_starter (모범 문장) + prompt_topic | 5 |
+| medium | Guided Writing | prompt_topic + collocation 힌트 | 5.5 |
+| low | Free Writing | prompt_topic만 | 6 |
+
+- scaffold_level은 학생 mastery_level + SRS 상태에 따라 자동 결정
+- AI Devil's Advocate: 약점 지적 후 재작문 유도 (모든 레벨)
+- `writing_attempts` 테이블에 `scaffold_level`, `reference_starter`, `prompt_topic` 저장
 
 ### 학습 흐름
 ```
-Quick Review → Echo Writing → Quick Sentence Writing
-   (워밍업)      (핵심 평가)      (자유 출력)
+Quick Review → Writing Mode (scaffold_level 자동 조정)
+   (워밍업)         (핵심 평가)
 ```
 
 ---
@@ -84,8 +86,10 @@ Database: Neon PostgreSQL (Vercel 통합)
 Auth: NextAuth.js v5 + Google OAuth
   - MoniBee 프로젝트 코드 재사용
 
-AI: Anthropic Claude API (Sonnet 4.5)
+AI: Anthropic Claude API (Sonnet 4.5) via langchain-anthropic
   - LangGraph 워크플로우로 평가 → 분기 → 재작문 루프 구현
+  - Python FastAPI + LangGraph → Vercel Python Functions (/api/python/)
+  - Phase 0에서 의존성 번들 500MB 한도 검증 필수
 
 Domain: Cloudflare DNS
 ```
@@ -208,11 +212,10 @@ Domain: Cloudflare DNS
 - user_id: uuid (FK)
 - card_id: uuid (FK)
 
--- 어떤 모드의 작문인가
-- mode: enum ('echo_writing' | 'quick_sentence_writing')
-- prompt: text (학생에게 준 프롬프트)
-- reference_sentence: text (Echo Writing의 모범 문장)
-- variation_mission: text (예: "음식 주제로 써라")
+-- Scaffold (단일 Writing Mode)
+- scaffold_level: enum ('high' | 'medium' | 'low') NOT NULL
+- reference_starter: text (nullable) -- high: 학생에게 보여준 모범/예시 문장
+- prompt_topic: text (nullable)      -- 학생에게 준 주제/상황 프롬프트
 
 -- 학생이 쓴 것
 - user_sentence: text
@@ -239,7 +242,7 @@ Domain: Cloudflare DNS
 - id: uuid (PK)
 - user_id: uuid (FK)
 - deck_id: uuid (FK)
-- mode: enum
+- mode: enum ('quick_review' | 'writing')
 - status: enum ('in_progress' | 'completed' | 'abandoned')
 
 -- 세션 통계
@@ -388,11 +391,10 @@ else: return 1  # Recognized
 - 시스템 Deck 2개 (Sec 1 단어 50~100개씩)
 - 5개 DB 테이블
 - Mode 1: Quick Review (Flashcard + 스와이프)
-- Mode 2: Echo Writing + Variation Mission + AI 피드백
-- Mode 3: Quick Sentence Writing + AI 피드백
+- Mode 2: Writing Mode (scaffold_level: high/medium/low) + AI 피드백
 - SRS (Hybrid SM-2)
 - Productive Mastery 추적
-- LangGraph 워크플로우 (평가 → 분기 → 재작문)
+- LangGraph 워크플로우 (평가 → 분기 → 재작문) — Vercel Python Functions
 - 모바일/태블릿 반응형 UI
 
 ### MVP 제외 (Phase 2 이후)
@@ -416,8 +418,11 @@ else: return 1  # Recognized
 1. Next.js 프로젝트 초기화 (Vercel 연결)
 2. Neon PostgreSQL 연결
 3. DB 마이그레이션 (5개 테이블)
-4. NextAuth + Google OAuth (MoniBee 코드 재사용)
+4. NextAuth + Google OAuth
 5. Anthropic API 키 등록
+6. **Vercel Python Functions 배포 테스트** (`/api/python/health`)
+   - 의존성: langgraph + langchain-anthropic + fastapi + mangum
+   - Vercel 500MB 번들 한도 검증
 
 ### Phase 1: 데이터 준비 (Day 2)
 1. Sec 1 단어 50개 큐레이션 (Quizlet 또는 Cambridge VP에서)
@@ -431,17 +436,16 @@ else: return 1  # Recognized
 4. 자가 평가 버튼 → SRS 업데이트
 5. 히스토리/통계 패널
 
-### Phase 3: Mode 2 구현 (Day 4~5)
-1. Echo Writing 화면
-2. Variation Mission 시스템 (DB에 미리 큐레이션)
-3. LangGraph 워크플로우 (FastAPI)
+### Phase 3: Writing Mode 구현 (Day 4~5)
+1. Writing 화면 (scaffold_level 기반 단일 UI)
+2. scaffold_level 자동 결정 로직 (mastery_level + writing_count 기반)
+3. LangGraph 워크플로우 (FastAPI + Vercel Python Functions)
 4. AI 평가 + Devil's Advocate 재작문
 5. writing_attempts 기록
 
-### Phase 4: Mode 3 + 마무리 (Day 6)
-1. Quick Sentence Writing
-2. Mastery Score 통합
-3. 대시보드 (학습 진도)
+### Phase 4: 마무리 (Day 6)
+1. Mastery Score 통합
+2. 대시보드 (학습 진도)
 
 ### Phase 5: 검증 (Day 7)
 1. 실제 사용자 테스트
@@ -615,5 +619,5 @@ sub-agent B 완료 → 메인 검토 → main 브랜치 머지
 
 ---
 
-*Last Updated: 2026-05-14*
+*Last Updated: 2026-05-14 (v2 — Writing Mode 통합, Vercel Python Functions 추가)*
 *Maintainer: Hoon*

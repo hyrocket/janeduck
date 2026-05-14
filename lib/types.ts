@@ -3,8 +3,9 @@ export type DeckSource = "janeduck" | "quizlet" | "user"
 export type SrsState = "new" | "learning" | "review" | "relearning" | "mastered"
 export type SrsRating = "again" | "hard" | "good" | "easy"
 export type RatingSource = "writing" | "self_eval"
-export type StudyMode = "quick_review" | "echo_writing" | "quick_sentence_writing"
+export type StudyMode = "quick_review" | "writing"
 export type SessionStatus = "in_progress" | "completed" | "abandoned"
+export type ScaffoldLevel = "high" | "medium" | "low"
 
 // ── DB Models ─────────────────────────────────────────────────
 export interface Deck {
@@ -71,10 +72,9 @@ export interface WritingAttempt {
   id: string
   user_id: string
   card_id: string
-  mode: "echo_writing" | "quick_sentence_writing"
-  prompt: string | null
-  reference_sentence: string | null
-  variation_mission: string | null
+  scaffold_level: ScaffoldLevel
+  reference_starter: string | null  // high scaffold: 모범/예시 문장
+  prompt_topic: string | null       // 주제/상황 프롬프트
   user_sentence: string
   ai_score: number | null
   ai_feedback: AiFeedback | null

@@ -1,0 +1,5 @@
+fastapi==0.115.6
+langgraph==0.2.70
+langchain-anthropic==0.3.15
+mangum==0.19.0
+pydantic==2.10.6

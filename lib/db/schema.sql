@@ -95,17 +95,20 @@ CREATE INDEX IF NOT EXISTS idx_user_cards_next_review ON user_cards(user_id, nex
 
 -- ============================================================
 -- 4. writing_attempts
+-- scaffold_level 기반 단일 Writing Mode
+-- high   = reference_starter 있음 (Echo Writing 스타일)
+-- medium = prompt_topic만 있고 starter 없음
+-- low    = 자유 작문 (Free Writing)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS writing_attempts (
   id                   UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id              UUID NOT NULL,
   card_id              UUID NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
 
-  -- Mode
-  mode                 TEXT CHECK (mode IN ('echo_writing', 'quick_sentence_writing')) NOT NULL,
-  prompt               TEXT,
-  reference_sentence   TEXT,
-  variation_mission    TEXT,
+  -- Scaffold
+  scaffold_level       TEXT CHECK (scaffold_level IN ('high', 'medium', 'low')) NOT NULL,
+  reference_starter    TEXT,           -- high scaffold: 학생에게 보여주는 모범/예시 문장
+  prompt_topic         TEXT,           -- 학생에게 준 주제/상황 프롬프트
 
   -- Student's work
   user_sentence        TEXT NOT NULL,
@@ -132,7 +135,7 @@ CREATE TABLE IF NOT EXISTS study_sessions (
   id                     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id                UUID NOT NULL,
   deck_id                UUID NOT NULL REFERENCES decks(id) ON DELETE CASCADE,
-  mode                   TEXT CHECK (mode IN ('quick_review', 'echo_writing', 'quick_sentence_writing')),
+  mode                   TEXT CHECK (mode IN ('quick_review', 'writing')),
   status                 TEXT CHECK (status IN ('in_progress', 'completed', 'abandoned')) DEFAULT 'in_progress',
 
   -- Session stats
