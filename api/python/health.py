@@ -1,15 +1,10 @@
-from fastapi import FastAPI
-from mangum import Mangum
-
-app = FastAPI()
+from http.server import BaseHTTPRequestHandler
+import json
 
 
-@app.get("/api/python/health")
-def health():
-    # Import heavy deps here to verify bundle size fits Vercel 500MB limit
-    import langgraph  # noqa: F401
-    import langchain_anthropic  # noqa: F401
-    return {"status": "ok", "langgraph": langgraph.__version__}
-
-
-handler = Mangum(app)
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(json.dumps({"status": "ok", "step": "bare"}).encode())
