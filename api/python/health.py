@@ -1,10 +1,14 @@
-from http.server import BaseHTTPRequestHandler
-import json
+from fastapi import FastAPI
+from mangum import Mangum
+import langgraph
+import langchain_anthropic  # noqa: F401
+
+app = FastAPI()
 
 
-class handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(json.dumps({"status": "ok", "step": "bare"}).encode())
+@app.get("/api/python/health")
+def health():
+    return {"status": "ok", "langgraph": langgraph.__version__}
+
+
+handler = Mangum(app, lifespan="off")
