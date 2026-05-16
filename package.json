@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:migrate": "tsx scripts/migrate.ts"
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:migration": "tsx scripts/apply_migration.ts"
   },
   "dependencies": {
     "@auth/core": "^0.41.2",
