@@ -14,12 +14,37 @@ if (!DATABASE_URL || DATABASE_URL.includes("user:password")) {
 const sql = neon(DATABASE_URL)
 const schema = readFileSync(join(process.cwd(), "lib/db/schema.sql"), "utf-8")
 
+function splitStatements(sqlText: string): string[] {
+  const statements: string[] = []
+  let current = ""
+  let inDollarQuote = false
+  let i = 0
+
+  while (i < sqlText.length) {
+    if (sqlText[i] === "$" && sqlText[i + 1] === "$") {
+      inDollarQuote = !inDollarQuote
+      current += "$$"
+      i += 2
+      continue
+    }
+    if (sqlText[i] === ";" && !inDollarQuote) {
+      const stmt = current.trim()
+      if (stmt) statements.push(stmt)
+      current = ""
+      i++
+      continue
+    }
+    current += sqlText[i]
+    i++
+  }
+  const remaining = current.trim()
+  if (remaining) statements.push(remaining)
+  return statements
+}
+
 async function migrate() {
   console.log("🚀 Running migration...")
-  const statements = schema
-    .split(";")
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0)
+  const statements = splitStatements(schema)
 
   try {
     for (const stmt of statements) {

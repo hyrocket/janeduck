@@ -98,6 +98,19 @@ Domain: Cloudflare DNS
 
 ---
 
+## AI 워크플로우 — LangGraph 활용 전략
+
+JaneDuck은 LangGraph를 단순 호출 도구가 아닌 핵심 학습 메커니즘 표현 수단으로 사용.
+
+### LangGraph 사용 이유
+1. 학습 루프의 분기/cycle을 그래프로 명확히 표현
+2. 노드별 독립 테스트/교체 가능
+3. State 자동 관리
+4. LangSmith로 학생 학습 패턴 분석/디버깅
+5. Phase 2 확장 시 노드 추가만으로 가능
+
+---
+
 ## UI 원칙
 
 ### 모바일/태블릿 우선
