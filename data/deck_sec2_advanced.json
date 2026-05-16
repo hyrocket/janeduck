@@ -1,0 +1,902 @@
+{
+  "deck": {
+    "name": "Sec 2 Advanced (test)",
+    "description": "99 key vocabulary words for Secondary 2 students covering Emotional Intelligence, Environmental Awareness, Digital Literacy, and Global Citizenship.",
+    "level": 2,
+    "source": "janeduck",
+    "is_public": true
+  },
+  "cards": [
+    {
+      "word": "Self-awareness",
+      "definition": "Conscious knowledge of one's own character and feelings.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Self-awareness is important for personal growth and development.", "context": "personal development" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 1
+    },
+    {
+      "word": "Empathy",
+      "definition": "The ability to understand and share the feelings of others.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Practicing empathy helps strengthen relationships with friends.", "context": "relationships" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 2
+    },
+    {
+      "word": "Resilience",
+      "definition": "The ability to recover quickly from difficulties.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Developing resilience helps students cope with academic stress.", "context": "academic life" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 3
+    },
+    {
+      "word": "Mindfulness",
+      "definition": "The practice of being fully present in the moment.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Mindfulness exercises can help reduce anxiety and improve focus.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 4
+    },
+    {
+      "word": "Compassion",
+      "definition": "Sympathetic pity and concern for the sufferings of others.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Showing compassion to others is an essential part of emotional intelligence.", "context": "relationships" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 5
+    },
+    {
+      "word": "Self-regulation",
+      "definition": "The ability to control one's emotions and behavior.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Learning self-regulation helps manage impulsive actions.", "context": "personal development" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 6
+    },
+    {
+      "word": "Optimism",
+      "definition": "Hopefulness and confidence about the future.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Her optimism helped her stay positive during tough times.", "context": "personal development" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 7
+    },
+    {
+      "word": "Gratitude",
+      "definition": "The quality of being thankful and showing appreciation.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Practicing gratitude daily can improve mental well-being.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 8
+    },
+    {
+      "word": "Emotional Agility",
+      "definition": "The ability to manage one's thoughts and emotions with flexibility.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Emotional agility allows people to respond to challenges effectively.", "context": "personal development" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 9
+    },
+    {
+      "word": "Vulnerability",
+      "definition": "The quality of being open to emotional hurt or criticism.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Acknowledging vulnerability can strengthen relationships with others.", "context": "relationships" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 10
+    },
+    {
+      "word": "Anxiety",
+      "definition": "A feeling of worry, nervousness, or unease.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Learning to manage anxiety is crucial for maintaining mental health.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 11
+    },
+    {
+      "word": "Depression",
+      "definition": "A mental health disorder characterized by persistent sadness.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Depression affects many teens, but support from friends can help.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 12
+    },
+    {
+      "word": "Coping Mechanism",
+      "definition": "Strategies used to manage stress or difficult emotions.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Developing healthy coping mechanisms can improve emotional resilience.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 13
+    },
+    {
+      "word": "Burnout",
+      "definition": "Physical or emotional exhaustion caused by prolonged stress.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Students should take breaks to avoid academic burnout.", "context": "academic life" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 14
+    },
+    {
+      "word": "Emotional Literacy",
+      "definition": "The ability to identify, understand, and express emotions.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Emotional literacy helps students communicate their feelings clearly.", "context": "personal development" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 15
+    },
+    {
+      "word": "Self-care",
+      "definition": "Activities that individuals engage in to maintain mental and emotional well-being.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Regular self-care helps prevent stress and burnout.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 16
+    },
+    {
+      "word": "Stress Management",
+      "definition": "Techniques used to control stress levels.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Time management is a key component of effective stress management.", "context": "academic life" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 17
+    },
+    {
+      "word": "Social Support",
+      "definition": "The perception and reality that one is cared for by a social network.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Strong social support can help individuals cope with difficult situations.", "context": "relationships" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 18
+    },
+    {
+      "word": "Conflict Resolution",
+      "definition": "The process of resolving a disagreement in a constructive manner.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Learning conflict resolution skills can improve relationships with peers.", "context": "relationships" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 19
+    },
+    {
+      "word": "Emotional Resilience",
+      "definition": "The ability to adapt to stressful situations or crises.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Emotional resilience allows students to recover from academic setbacks.", "context": "academic life" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 20
+    },
+    {
+      "word": "Positive Psychology",
+      "definition": "The scientific study of what makes life worth living.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Positive psychology focuses on building strengths rather than fixing weaknesses.", "context": "personal development" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 21
+    },
+    {
+      "word": "Self-compassion",
+      "definition": "Treating oneself with kindness and understanding during times of struggle.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Practicing self-compassion can reduce feelings of inadequacy.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 22
+    },
+    {
+      "word": "Assertiveness",
+      "definition": "The quality of being self-assured and confident without being aggressive.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Assertiveness helps students communicate their needs effectively.", "context": "relationships" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 23
+    },
+    {
+      "word": "Mental Health",
+      "definition": "A state of well-being in which every individual realizes their own potential and can cope with normal stresses of life.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Fostering good mental health is essential for academic and personal success.", "context": "mental health" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 24
+    },
+    {
+      "word": "Emotional Intelligence",
+      "definition": "The ability to recognize and manage one's own emotions and the emotions of others.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Emotional intelligence is key to building strong relationships with others.", "context": "relationships" }],
+      "tags": ["emotional-intelligence", "mental-health"],
+      "order_in_deck": 25
+    },
+    {
+      "word": "Sustainability",
+      "definition": "Meeting the needs of the present without compromising future generations.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Sustainability should be a priority in every industry to protect the planet.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 26
+    },
+    {
+      "word": "Biodiversity",
+      "definition": "The variety of life in the world or in a particular habitat.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Protecting biodiversity helps maintain balance in ecosystems.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 27
+    },
+    {
+      "word": "Climate Change",
+      "definition": "A change in global or regional climate patterns, often caused by human activity.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Climate change is causing more extreme weather patterns worldwide.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 28
+    },
+    {
+      "word": "Carbon Footprint",
+      "definition": "The total amount of greenhouse gases generated by individual actions.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Reducing your carbon footprint helps combat climate change.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 29
+    },
+    {
+      "word": "Renewable Energy",
+      "definition": "Energy from sources that are naturally replenished.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Solar and wind power are popular forms of renewable energy.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 30
+    },
+    {
+      "word": "Conservation",
+      "definition": "The protection and preservation of natural resources and environments.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Conservation efforts are necessary to save endangered species.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 31
+    },
+    {
+      "word": "Recycling",
+      "definition": "The process of converting waste into reusable material.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Recycling reduces the amount of waste that ends up in landfills.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 32
+    },
+    {
+      "word": "Ecosystem",
+      "definition": "A biological community of interacting organisms and their physical environment.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Maintaining a healthy ecosystem is vital for the survival of all species.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 33
+    },
+    {
+      "word": "Deforestation",
+      "definition": "The clearing or thinning of forests by humans.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Deforestation contributes to habitat loss and global warming.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 34
+    },
+    {
+      "word": "Greenhouse Gases",
+      "definition": "Gases that trap heat in the atmosphere, contributing to global warming.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Reducing greenhouse gas emissions is crucial for slowing climate change.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 35
+    },
+    {
+      "word": "Pollution",
+      "definition": "The introduction of harmful substances into the environment.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Air pollution is a serious health concern in many major cities.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 36
+    },
+    {
+      "word": "Renewable",
+      "definition": "Capable of being replenished naturally.",
+      "part_of_speech": "adjective",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Renewable resources like water and sunlight are essential for sustainability.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 37
+    },
+    {
+      "word": "Organic",
+      "definition": "Produced without the use of chemical fertilizers, pesticides, or other artificial agents.",
+      "part_of_speech": "adjective",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Organic farming is better for the environment and human health.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 38
+    },
+    {
+      "word": "Urbanization",
+      "definition": "The increasing number of people that live in urban areas.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Urbanization leads to greater demand for resources and infrastructure.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 39
+    },
+    {
+      "word": "Wildlife Conservation",
+      "definition": "The practice of protecting animal species and their habitats.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Wildlife conservation is essential for preserving biodiversity.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 40
+    },
+    {
+      "word": "Fossil Fuels",
+      "definition": "Natural fuels like coal, oil, and gas formed from the remains of living organisms.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Burning fossil fuels releases large amounts of carbon dioxide into the atmosphere.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 41
+    },
+    {
+      "word": "Sustainable Development",
+      "definition": "Economic development that is conducted without depletion of natural resources.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Sustainable development aims to balance economic growth with environmental protection.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 42
+    },
+    {
+      "word": "Habitat",
+      "definition": "The natural environment in which a plant or animal lives.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "The destruction of natural habitats has led to a decline in many species.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 43
+    },
+    {
+      "word": "Solar Energy",
+      "definition": "Energy from the sun that is converted into thermal or electrical energy.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Solar energy is a clean, renewable resource that can reduce reliance on fossil fuels.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 44
+    },
+    {
+      "word": "Overpopulation",
+      "definition": "A situation where the number of people exceeds the resources available to sustain them.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Overpopulation puts a strain on natural resources like water and food.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 45
+    },
+    {
+      "word": "Endangered Species",
+      "definition": "A species at risk of extinction.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Conservationists work to protect endangered species from extinction.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 46
+    },
+    {
+      "word": "Carbon Emissions",
+      "definition": "The release of carbon dioxide into the atmosphere.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Reducing carbon emissions is essential for slowing global warming.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 47
+    },
+    {
+      "word": "Renewable Resources",
+      "definition": "Natural resources that can be replenished over time.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Renewable resources are key to sustainable energy solutions.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 48
+    },
+    {
+      "word": "Ecological Footprint",
+      "definition": "The impact of a person or community on the environment, measured by the amount of natural resources consumed.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Reducing our ecological footprint can help protect the planet for future generations.", "context": "environment" }],
+      "tags": ["environment", "sustainability"],
+      "order_in_deck": 49
+    },
+    {
+      "word": "Algorithm",
+      "definition": "A set of rules followed by a computer to solve problems or perform tasks.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Social media algorithms determine what content appears on your feed.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 50
+    },
+    {
+      "word": "Fake News",
+      "definition": "False or misleading information presented as news.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "It's important to verify information to avoid spreading fake news.", "context": "media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 51
+    },
+    {
+      "word": "Cyberbullying",
+      "definition": "The use of electronic communication to bully a person.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Schools are taking action to prevent cyberbullying among students.", "context": "school life" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 52
+    },
+    {
+      "word": "Data Privacy",
+      "definition": "The protection of personal information shared online.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Strong data privacy measures are necessary to safeguard personal information.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 53
+    },
+    {
+      "word": "Digital Footprint",
+      "definition": "The information about a person that exists on the internet as a result of their online activity.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Managing your digital footprint is important for your future reputation.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 54
+    },
+    {
+      "word": "Encryption",
+      "definition": "The process of converting information into a code to prevent unauthorized access.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Encryption is used to secure sensitive online transactions.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 55
+    },
+    {
+      "word": "Meme",
+      "definition": "A humorous image, video, or text that is copied and spread rapidly online.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Memes often go viral on social media platforms.", "context": "social media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 56
+    },
+    {
+      "word": "Cloud Storage",
+      "definition": "A service that stores data on remote servers, accessible via the internet.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Cloud storage allows users to access their files from any device.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 57
+    },
+    {
+      "word": "Phishing",
+      "definition": "A fraudulent attempt to obtain sensitive information by disguising as a trustworthy entity.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Phishing scams often target users through email or text messages.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 58
+    },
+    {
+      "word": "Malware",
+      "definition": "Software designed to disrupt, damage, or gain unauthorized access to a computer system.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Malware can infect your computer through unsafe downloads.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 59
+    },
+    {
+      "word": "Influencer",
+      "definition": "A person who has the power to affect others' purchasing decisions through social media.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Influencers often collaborate with brands to promote products online.", "context": "social media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 60
+    },
+    {
+      "word": "Content Creator",
+      "definition": "A person who creates material for digital platforms.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Many content creators make videos, blogs, or podcasts to share with their audience.", "context": "social media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 61
+    },
+    {
+      "word": "Streaming",
+      "definition": "Transmitting or receiving data (especially video and audio) over the internet in real time.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Streaming services like Netflix allow you to watch movies without downloading them.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 62
+    },
+    {
+      "word": "Cybersecurity",
+      "definition": "The practice of protecting computer systems from digital attacks.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Cybersecurity measures help prevent hacking and data breaches.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 63
+    },
+    {
+      "word": "Virtual Reality",
+      "definition": "A computer-generated simulation of a three-dimensional environment.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Virtual reality headsets are used for immersive gaming experiences.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 64
+    },
+    {
+      "word": "E-commerce",
+      "definition": "The buying and selling of goods or services over the internet.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "E-commerce has made online shopping more convenient for consumers.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 65
+    },
+    {
+      "word": "Blogging",
+      "definition": "Writing or updating a blog, often on specific topics of interest.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Blogging allows individuals to share their thoughts and expertise online.", "context": "media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 66
+    },
+    {
+      "word": "Hacking",
+      "definition": "Gaining unauthorized access to data in a system or computer.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Hacking incidents have increased the demand for cybersecurity experts.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 67
+    },
+    {
+      "word": "Hashtag",
+      "definition": "A word or phrase preceded by a hash symbol used to categorize content on social media.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Hashtags help users find posts related to specific topics on social media.", "context": "social media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 68
+    },
+    {
+      "word": "E-learning",
+      "definition": "Learning conducted via electronic media, typically the internet.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "E-learning platforms provide access to courses and educational resources.", "context": "school life" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 69
+    },
+    {
+      "word": "Copyright",
+      "definition": "The legal right that grants the creator of original work exclusive rights to its use and distribution.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Copyright laws protect artists from having their work copied without permission.", "context": "media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 70
+    },
+    {
+      "word": "Podcast",
+      "definition": "A digital audio file available for download or streaming, usually part of a series.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Podcasts are popular for learning and entertainment on the go.", "context": "media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 71
+    },
+    {
+      "word": "Cybercrime",
+      "definition": "Criminal activities carried out using computers or the internet.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Governments are working to combat the rise in cybercrime.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 72
+    },
+    {
+      "word": "Social Media Literacy",
+      "definition": "The ability to navigate social media platforms responsibly and critically.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Social media literacy helps students identify reliable sources and avoid misinformation.", "context": "media" }],
+      "tags": ["digital-literacy", "media"],
+      "order_in_deck": 73
+    },
+    {
+      "word": "Digital Citizenship",
+      "definition": "Navigating the digital world safely, responsibly, and ethically.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Being a responsible digital citizen means being respectful online.", "context": "technology" }],
+      "tags": ["digital-literacy", "technology"],
+      "order_in_deck": 74
+    },
+    {
+      "word": "Globalization",
+      "definition": "The process by which businesses or other organizations develop international influence.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Globalization has increased cultural exchange around the world.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 75
+    },
+    {
+      "word": "Humanitarian",
+      "definition": "Concerned with promoting human welfare.",
+      "part_of_speech": "adjective",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Humanitarian aid is critical during times of natural disasters.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 76
+    },
+    {
+      "word": "Diversity",
+      "definition": "A range of different things or people, such as various cultures, races, and ethnicities.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Embracing diversity helps create inclusive communities.", "context": "community" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 77
+    },
+    {
+      "word": "Equity",
+      "definition": "Fairness and justice in the way people are treated.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Schools should promote equity by giving all students access to resources.", "context": "school life" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 78
+    },
+    {
+      "word": "Inclusivity",
+      "definition": "The practice or policy of including people who might otherwise be excluded.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Promoting inclusivity in classrooms ensures that everyone feels welcome.", "context": "school life" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 79
+    },
+    {
+      "word": "Volunteerism",
+      "definition": "Offering services by choice without payment.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Volunteerism fosters a sense of responsibility and community involvement.", "context": "community" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 80
+    },
+    {
+      "word": "Advocacy",
+      "definition": "Public support for a particular cause or policy.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Advocacy groups work to raise awareness about important social issues.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 81
+    },
+    {
+      "word": "Human Rights",
+      "definition": "The basic rights and freedoms that all individuals are entitled to.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Human rights organizations fight for equality and justice worldwide.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 82
+    },
+    {
+      "word": "Philanthropy",
+      "definition": "The desire to promote the welfare of others, typically through donations or charitable actions.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Philanthropy plays a key role in funding social and environmental initiatives.", "context": "community" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 83
+    },
+    {
+      "word": "Social Justice",
+      "definition": "Justice in terms of the distribution of wealth, opportunities, and privileges within a society.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Social justice movements advocate for equal rights and fair treatment.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 84
+    },
+    {
+      "word": "Global Citizenship",
+      "definition": "Recognizing your role and responsibilities in the global community.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Being a global citizen means taking action on issues that affect the world.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 85
+    },
+    {
+      "word": "Civil Rights",
+      "definition": "The rights of citizens to political and social freedom and equality.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Civil rights leaders have fought for equal treatment under the law.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 86
+    },
+    {
+      "word": "Activism",
+      "definition": "The policy or action of using campaigning to bring about political or social change.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Activism has led to important legal and social reforms throughout history.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 87
+    },
+    {
+      "word": "Fair Trade",
+      "definition": "Trade in which fair prices are paid to producers in developing countries.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Fair trade ensures that workers receive fair wages and decent working conditions.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 88
+    },
+    {
+      "word": "Civic Engagement",
+      "definition": "Individual and collective actions designed to identify and address issues of public concern.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Civic engagement is essential for maintaining a healthy democracy.", "context": "community" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 89
+    },
+    {
+      "word": "Refugee",
+      "definition": "A person who has been forced to leave their country to escape war, persecution, or natural disaster.",
+      "part_of_speech": "noun",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Refugees often seek asylum in safer countries to escape conflict.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 90
+    },
+    {
+      "word": "Environmental Justice",
+      "definition": "The fair treatment of all people with respect to environmental laws and policies.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Environmental justice ensures that no group suffers disproportionately from environmental hazards.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 91
+    },
+    {
+      "word": "Global Health",
+      "definition": "Health issues that transcend national boundaries.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Global health organizations work to combat diseases like malaria and HIV.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 92
+    },
+    {
+      "word": "Human Trafficking",
+      "definition": "The illegal trade of humans for purposes of forced labor, sexual slavery, or commercial exploitation.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Governments are working to combat human trafficking and protect vulnerable individuals.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 93
+    },
+    {
+      "word": "Child Labor",
+      "definition": "The use of children in industries or businesses, often under harsh conditions.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Global efforts aim to end child labor and ensure that children receive education.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 94
+    },
+    {
+      "word": "Microfinance",
+      "definition": "Financial services provided to low-income individuals or groups.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Microfinance loans help people in developing countries start small businesses.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 95
+    },
+    {
+      "word": "Nonprofit Organization",
+      "definition": "An organization dedicated to furthering a social cause without profit as its main goal.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Nonprofit organizations play a critical role in providing social services.", "context": "community" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 96
+    },
+    {
+      "word": "Gender Equality",
+      "definition": "The state in which access to rights and opportunities is unaffected by gender.",
+      "part_of_speech": "noun",
+      "difficulty_band": "uncommon",
+      "example_sentences": [{ "sentence": "Promoting gender equality in schools helps create equal opportunities for all students.", "context": "school life" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 97
+    },
+    {
+      "word": "Corporate Social Responsibility",
+      "definition": "A business model that helps companies be socially accountable to themselves, their stakeholders, and the public.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Companies that prioritize CSR contribute to the well-being of the community.", "context": "community" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 98
+    },
+    {
+      "word": "Universal Education",
+      "definition": "The principle that all children should have access to quality education.",
+      "part_of_speech": "noun",
+      "difficulty_band": "advanced",
+      "example_sentences": [{ "sentence": "Universal education is necessary for economic growth and social development.", "context": "global issues" }],
+      "tags": ["global-citizenship", "social-responsibility"],
+      "order_in_deck": 99
+    }
+  ]
+}
