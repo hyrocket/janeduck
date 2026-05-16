@@ -86,10 +86,10 @@ Database: Neon PostgreSQL (Vercel 통합)
 Auth: NextAuth.js v5 + Google OAuth
   - MoniBee 프로젝트 코드 재사용
 
-AI: Anthropic Claude API (Sonnet 4.5) via langchain-anthropic
+AI: OpenAI API (gpt-4o-mini) via langchain-openai
   - LangGraph 워크플로우로 평가 → 분기 → 재작문 루프 구현
   - Python FastAPI + LangGraph → Vercel Python Functions (/api/python/)
-  - Phase 0에서 의존성 번들 500MB 한도 검증 필수
+  - Phase 0에서 의존성 번들 500MB 한도 검증 완료 (307MB)
 
 Domain: Cloudflare DNS
 ```
