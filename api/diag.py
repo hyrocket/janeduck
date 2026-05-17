@@ -1,11 +1,22 @@
 import sys
+import os
 import json
 from http.server import BaseHTTPRequestHandler
 
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        info = {"sys_path": sys.path, "errors": []}
+        try:
+            task_ls = os.listdir("/var/task")
+        except Exception as e:
+            task_ls = str(e)
+        info = {
+            "sys_path": sys.path,
+            "cwd": os.getcwd(),
+            "file": __file__,
+            "var_task_ls": task_ls,
+            "errors": [],
+        }
         try:
             from a2wsgi import ASGIMiddleware
             info["a2wsgi"] = "ok"
