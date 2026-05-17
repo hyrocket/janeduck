@@ -8,7 +8,7 @@ export default function LoginPage() {
           JaneDuck 🦆
         </h1>
         <p className="text-center text-gray-500 text-sm mb-8">
-          AI Writing Coach for Sec 1–2 Students
+          Learn English words by writing, not memorizing
         </p>
         <form
           action={async () => {
