@@ -25,17 +25,26 @@ export default async function DecksPage() {
               <p className="text-xs text-gray-400 mt-0.5">Hi, {session.user.name.split(" ")[0]}</p>
             )}
           </div>
-          {session ? (
-            <form action={async () => { "use server"; await signOut({ redirectTo: "/" }) }}>
-              <button type="submit" className="text-xs text-gray-400 hover:text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                Sign out
-              </button>
-            </form>
-          ) : (
-            <Link href="/login" className="text-xs font-medium text-yellow-600 bg-yellow-100 hover:bg-yellow-200 px-3 py-1.5 rounded-lg transition-colors">
-              Sign in
+          <div className="flex items-center gap-2">
+            <Link
+              href="/starred"
+              className="text-xl text-yellow-400 hover:text-yellow-500 px-2 py-1 rounded-lg hover:bg-yellow-50 transition-colors"
+              title="Starred words"
+            >
+              ★
             </Link>
-          )}
+            {session ? (
+              <form action={async () => { "use server"; await signOut({ redirectTo: "/" }) }}>
+                <button type="submit" className="text-xs text-gray-400 hover:text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                  Sign out
+                </button>
+              </form>
+            ) : (
+              <Link href="/login" className="text-xs font-medium text-yellow-600 bg-yellow-100 hover:bg-yellow-200 px-3 py-1.5 rounded-lg transition-colors">
+                Sign in
+              </Link>
+            )}
+          </div>
         </div>
 
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-4">
