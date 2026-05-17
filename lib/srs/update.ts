@@ -1,97 +1,69 @@
-import type { SrsRating, SrsState, SelfEvalRating } from "@/lib/types"
+import type { SelfEvalRating } from "@/lib/types"
 
-interface SrsFields {
-  srs_state: SrsState
-  ease_factor: number
-  interval_days: number
-  previous_interval_days: number
-  lapse_count: number
+// ── Tuning constants (SRS_SPEC.md §4) ────────────────────────
+export const W_MASTERY          = 0.40
+export const W_RECENCY          = 0.30
+export const W_SELFEVAL         = 0.15
+export const W_PRACTICE         = 0.15
+export const MASTERY_DECAY_COEF = 0.5   // recency mastery-decay strength
+export const RECENCY_COEF       = 25    // log2 curve scale factor
+
+// ── Factor calculators (SRS_SPEC.md §1-3 ~ §1-6) ─────────────
+
+function masteryFactor(mastery: number): number {
+  // Lower mastery = more urgent. SRS_SPEC §1-3 — linear inverse.
+  return ((5 - Math.min(5, Math.max(0, mastery))) / 5) * 100
+}
+
+function recencyFactor(lastReviewedAt: Date | null, mastery: number): number {
+  // Never reviewed = maximum urgency.
+  if (!lastReviewedAt) return 100
+
+  const msPerDay = 1000 * 60 * 60 * 24
+  const days = (Date.now() - lastReviewedAt.getTime()) / msPerDay
+
+  // Well-known words are forgotten more slowly (mastery decay). SRS_SPEC §1-4.
+  const adjustedDays = days / (1 + mastery * MASTERY_DECAY_COEF)
+
+  // log2 curve: fast rise early, plateau later. SRS_SPEC §1-4.
+  return Math.min(100, Math.log2(adjustedDays + 1) * RECENCY_COEF)
+}
+
+function selfevalFactor(rating: SelfEvalRating | null): number {
+  // Optional — 0 if not provided. SRS_SPEC §1-5.
+  if (!rating) return 0
+  const map: Record<SelfEvalRating, number> = {
+    dont_know: 100,
+    unsure:    60,
+    know:      20,
+    know_well: 0,
+  }
+  return map[rating]
+}
+
+function practiceFactor(writingCount: number): number {
+  // Catches "knows but hasn't written" gap. SRS_SPEC §1-6.
+  if (writingCount === 0) return 100
+  if (writingCount === 1) return 60
+  if (writingCount === 2) return 30
+  return 0
+}
+
+// ── Public API ────────────────────────────────────────────────
+
+export interface ReviewPriorityInput {
+  mastery_level: number
+  last_reviewed_at: Date | null
+  last_self_eval_rating: SelfEvalRating | null
   writing_attempts_count: number
 }
 
-export interface SrsUpdateResult {
-  srs_state: SrsState
-  ease_factor: number
-  interval_days: number
-  previous_interval_days: number
-  lapse_count: number
-  next_review_at: Date
-}
-
-function clampEase(e: number) { return Math.min(3.0, Math.max(1.3, e)) }
-function clampInterval(i: number) { return Math.min(365, Math.max(0, i)) }
-
-export function applySrsRating(current: SrsFields, rating: SrsRating): SrsUpdateResult {
-  const { srs_state, ease_factor, interval_days, previous_interval_days, lapse_count, writing_attempts_count } = current
-
-  let newState: SrsState = srs_state
-  let newEase = ease_factor
-  let newInterval = interval_days
-  let newPrev = previous_interval_days
-  let newLapse = lapse_count
-
-  if (srs_state === "new" || srs_state === "learning") {
-    if (rating === "again" || rating === "hard") {
-      newState = "learning"
-      newInterval = 1
-    } else if (rating === "good") {
-      newState = "review"
-      newInterval = 1
-    } else {
-      newState = "review"
-      newInterval = 4
-    }
-  } else if (srs_state === "review") {
-    if (rating === "again") {
-      newState = "relearning"
-      newPrev = interval_days
-      newInterval = 0
-      newEase = clampEase(ease_factor - 0.20)
-      newLapse = lapse_count + 1
-    } else if (rating === "hard") {
-      newInterval = Math.max(1, Math.round(interval_days * 1.2))
-      newEase = clampEase(ease_factor - 0.15)
-    } else if (rating === "good") {
-      newInterval = Math.max(1, Math.round(interval_days * ease_factor))
-    } else {
-      newInterval = Math.max(1, Math.round(interval_days * ease_factor * 1.15))
-      newEase = clampEase(ease_factor + 0.15)
-    }
-  } else {
-    // relearning
-    if (rating === "again" || rating === "hard") {
-      newState = "relearning"
-      newInterval = 1
-    } else if (rating === "good") {
-      newState = "review"
-      newInterval = Math.max(1, Math.round(previous_interval_days * 0.5))
-    } else {
-      newState = "review"
-      newInterval = Math.max(1, previous_interval_days)
-    }
-  }
-
-  // self_eval cap: without writing practice, cap interval to avoid false mastery
-  if (writing_attempts_count === 0) {
-    newInterval = Math.min(newInterval, 3)
-  } else if (writing_attempts_count < 3) {
-    newInterval = Math.min(newInterval, 14)
-  }
-
-  newInterval = clampInterval(newInterval)
-
-  const next_review_at = new Date()
-  next_review_at.setDate(next_review_at.getDate() + newInterval)
-
-  return { srs_state: newState, ease_factor: newEase, interval_days: newInterval, previous_interval_days: newPrev, lapse_count: newLapse, next_review_at }
-}
-
-export function selfEvalToSrsRating(selfEval: SelfEvalRating): SrsRating {
-  const map: Record<SelfEvalRating, SrsRating> = {
-    dont_know: "again",
-    unsure: "hard",
-    know: "good",
-    know_well: "easy",
-  }
-  return map[selfEval]
+/** Returns 0–100. Higher = more urgent to review. SRS_SPEC.md §1-1. */
+export function calculateReviewPriority(input: ReviewPriorityInput): number {
+  return (
+    W_MASTERY  * masteryFactor(input.mastery_level) +
+    W_RECENCY  * recencyFactor(input.last_reviewed_at, input.mastery_level) +
+    W_SELFEVAL * selfevalFactor(input.last_self_eval_rating) +
+    W_PRACTICE * practiceFactor(input.writing_attempts_count)
+  )
 }

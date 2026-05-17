@@ -14,7 +14,6 @@ interface CardData {
   pronunciation: string | null
   example_sentences: { sentence: string; context?: string }[] | null
   user_card: null | {
-    srs_state: string
     mastery_level: number
     is_starred: boolean
     last_self_eval_rating: string | null
