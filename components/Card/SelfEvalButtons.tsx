@@ -8,40 +8,50 @@ interface Props {
 
 const BUTTONS: {
   rating: SelfEvalRating
+  emoji: string
   label: string
   base: string
+  hover: string
   selected: string
 }[] = [
   {
     rating: "dont_know",
+    emoji: "😵",
     label: "Don't know",
-    base: "bg-red-100 text-red-700 active:bg-red-200",
-    selected: "bg-red-200 text-red-800 ring-2 ring-red-400 ring-offset-1",
+    base: "bg-red-100 text-red-600",
+    hover: "hover:bg-red-200 hover:text-red-700",
+    selected: "bg-red-500 text-white shadow-md",
   },
   {
     rating: "unsure",
+    emoji: "🤔",
     label: "Unsure",
-    base: "bg-orange-100 text-orange-700 active:bg-orange-200",
-    selected: "bg-orange-200 text-orange-800 ring-2 ring-orange-400 ring-offset-1",
+    base: "bg-orange-100 text-orange-600",
+    hover: "hover:bg-orange-200 hover:text-orange-700",
+    selected: "bg-orange-400 text-white shadow-md",
   },
   {
     rating: "know",
+    emoji: "😊",
     label: "Know it",
-    base: "bg-green-100 text-green-700 active:bg-green-200",
-    selected: "bg-green-200 text-green-800 ring-2 ring-green-400 ring-offset-1",
+    base: "bg-green-100 text-green-700",
+    hover: "hover:bg-green-200 hover:text-green-800",
+    selected: "bg-green-500 text-white shadow-md",
   },
   {
     rating: "know_well",
+    emoji: "🤩",
     label: "Know well",
-    base: "bg-teal-100 text-teal-700 active:bg-teal-200",
-    selected: "bg-teal-200 text-teal-800 ring-2 ring-teal-400 ring-offset-1",
+    base: "bg-teal-100 text-teal-700",
+    hover: "hover:bg-teal-200 hover:text-teal-800",
+    selected: "bg-teal-500 text-white shadow-md",
   },
 ]
 
 export default function SelfEvalButtons({ onRate, disabled, currentRating }: Props) {
   return (
     <div className="grid grid-cols-4 gap-2 w-full px-4">
-      {BUTTONS.map(({ rating, label, base, selected }) => {
+      {BUTTONS.map(({ rating, emoji, label, base, hover, selected }) => {
         const isSelected = currentRating === rating
         return (
           <button
@@ -49,14 +59,16 @@ export default function SelfEvalButtons({ onRate, disabled, currentRating }: Pro
             onClick={() => onRate(rating)}
             disabled={disabled}
             className={`
-              ${isSelected ? selected : base}
-              rounded-xl py-3 text-xs font-semibold
-              transition-all duration-100
+              ${isSelected ? selected : `${base} ${hover}`}
+              flex flex-col items-center gap-0.5
+              rounded-xl py-2.5 text-xs font-semibold
+              transition-all duration-150 active:scale-95
               disabled:opacity-40 disabled:cursor-not-allowed
               touch-manipulation
             `}
           >
-            {label}
+            <span className="text-base leading-none">{emoji}</span>
+            <span>{label}</span>
           </button>
         )
       })}
