@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 from langgraph.types import Command
 
-from .workflows.graph import writing_graph
-from .models.writing import StartWritingRequest, SubmitWritingRequest, ActionRequest
+from workflows.graph import writing_graph
+from models.writing import StartWritingRequest, SubmitWritingRequest, ActionRequest
 
 app = FastAPI(title="JaneDuck API")
 
