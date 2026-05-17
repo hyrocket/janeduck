@@ -14,4 +14,4 @@ _uvloop.asyncio_loop_factory = lambda use_subprocess=False: lambda: asyncio.Sele
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("index:app", port=8000, loop="asyncio")
+    uvicorn.run("index:fastapi_app", port=8000, loop="asyncio")

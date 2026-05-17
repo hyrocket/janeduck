@@ -12,16 +12,16 @@ load_dotenv()
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from mangum import Mangum
+from a2wsgi import ASGIMiddleware
 from langgraph.types import Command
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 from workflows.graph import build_writing_graph
 from models.writing import StartWritingRequest, SubmitWritingRequest, ActionRequest
 
-app = FastAPI(title="JaneDuck API")
+fastapi_app = FastAPI(title="JaneDuck API")
 
-app.add_middleware(
+fastapi_app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "https://janeduck.vercel.app"],
     allow_credentials=True,
@@ -56,12 +56,12 @@ def _prompt_context(state: dict) -> dict:
     }
 
 
-@app.get("/health")
+@fastapi_app.get("/health")
 def health():
     return {"status": "ok"}
 
 
-@app.post("/writing/start")
+@fastapi_app.post("/writing/start")
 async def start_writing(req: StartWritingRequest):
     async with AsyncPostgresSaver.from_conn_string(_conninfo()) as checkpointer:
         await checkpointer.setup()
@@ -85,7 +85,7 @@ async def start_writing(req: StartWritingRequest):
         }
 
 
-@app.post("/writing/submit")
+@fastapi_app.post("/writing/submit")
 async def submit_writing(req: SubmitWritingRequest):
     async with AsyncPostgresSaver.from_conn_string(_conninfo()) as checkpointer:
         await checkpointer.setup()
@@ -130,7 +130,7 @@ async def submit_writing(req: SubmitWritingRequest):
         raise HTTPException(500, "Unexpected graph state after submit")
 
 
-@app.post("/writing/action")
+@fastapi_app.post("/writing/action")
 async def choose_action(req: ActionRequest):
     async with AsyncPostgresSaver.from_conn_string(_conninfo()) as checkpointer:
         await checkpointer.setup()
@@ -156,6 +156,19 @@ async def choose_action(req: ActionRequest):
         }
 
 
-# Vercel Python Function handler.
-# api_gateway_base_path strips "/api/py" prefix so FastAPI sees "/writing/start" etc.
-handler = Mangum(app, api_gateway_base_path="/api/py")
+# Vercel Python Function handler (WSGI).
+# Strips the "/api/py" prefix before forwarding to FastAPI.
+class _StripPrefix:
+    def __init__(self, wsgi_app, prefix: str):
+        self._app = wsgi_app
+        self._prefix = prefix
+
+    def __call__(self, environ, start_response):
+        path = environ.get("PATH_INFO", "")
+        if path.startswith(self._prefix):
+            environ = dict(environ)
+            environ["PATH_INFO"] = path[len(self._prefix):] or "/"
+        return self._app(environ, start_response)
+
+
+app = _StripPrefix(ASGIMiddleware(fastapi_app), "/api/py")

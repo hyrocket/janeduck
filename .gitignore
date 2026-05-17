@@ -48,3 +48,5 @@ api/.langgraph_api/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
