@@ -1,14 +1,16 @@
 from workflows.state import WritingState
+from workflows.judgers import decide_scaffold
 
 
 def determine_scaffold_node(state: WritingState) -> dict:
-    # STUB — always returns "high".
-    # Real impl (§5): mastery 0-1→high, 2-4→medium, 5→low.
-    # Also resets per-attempt state on entry.
+    """ScaffoldDecider — §5 rule. Resets per-session state."""
+    mastery = state.get("mastery_level", 0)
+    result  = decide_scaffold(mastery)
+    print(f"[determine_scaffold] {result['reason']} → scaffold={result['scaffold']}")
     return {
-        "current_scaffold":  "high",
+        "current_scaffold":    result["scaffold"],
         "is_master_challenge": False,
-        "attempt_count":     0,
-        "previous_attempts": [],
-        "suggested_actions": [],
+        "attempt_count":       0,
+        "previous_attempts":   [],
+        "suggested_actions":   [],
     }

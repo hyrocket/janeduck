@@ -1,32 +1,19 @@
 from langgraph.types import interrupt
 from workflows.state import WritingState, UserAction
+from workflows.judgers import suggest_actions
 
-# ── present_feedback — ActionSuggester rule table (§8-1) ─────
+
+# ── present_feedback — ActionSuggester (§8-1) ────────────────
 
 def present_feedback_node(state: WritingState) -> dict:
-    score        = state.get("overall_score") or 0
-    scaffold     = state.get("current_scaffold", "high")
-    attempt      = state.get("attempt_count", 1)
-    word_used    = state.get("target_word_used", True)
+    score      = state.get("overall_score") or 0
+    scaffold   = state.get("current_scaffold", "high")
+    attempt    = state.get("attempt_count", 0)
+    word_used  = state.get("target_word_used", True)
 
-    if attempt >= 3:
-        actions = ["next_word"]
-        reason  = "rule: attempt_count >= 3"
-    elif not word_used:
-        actions = ["try_again", "next_word"]
-        reason  = "rule: target_word_used=False"
-    elif score <= 7:
-        actions = ["try_again", "next_word"]
-        reason  = f"rule: score={score} <= 7"
-    elif scaffold == "low":
-        actions = ["next_word"]
-        reason  = "rule: score>=8, scaffold=low (ceiling reached)"
-    else:
-        actions = ["master_challenge", "next_word"]
-        reason  = f"rule: score={score} >= 8, scaffold={scaffold}"
-
-    print(f"[present_feedback] {reason} → {actions}")
-    return {"suggested_actions": actions}
+    result  = suggest_actions(score, scaffold, attempt, word_used)
+    print(f"[present_feedback] {result['reason']} → {result['actions']}")
+    return {"suggested_actions": result["actions"]}
 
 
 # ── await_user_action — Pause point 2 ────────────────────────
@@ -48,6 +35,9 @@ def await_user_action_node(state: WritingState) -> dict:
         current     = state.get("current_scaffold", "high")
         update["current_scaffold"]    = scaffold_up.get(current, current)
         update["is_master_challenge"] = True
+        # Advance mastery baseline to the earned value from the previous attempt.
+        # try_again keeps session-start mastery (결정 C); master_challenge promotes it.
+        update["mastery_level"] = state.get("mastery_level_after") or state.get("mastery_level", 0)
     else:
         update["is_master_challenge"] = False
 

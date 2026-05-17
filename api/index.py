@@ -1,4 +1,15 @@
 import uuid
+import traceback
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load env files: .env.local overrides .env (mirrors Next.js precedence).
+# Both are at project root (one level up from this api/ directory).
+_root = Path(__file__).parent.parent
+load_dotenv(_root / ".env.local", override=False)
+load_dotenv(_root / ".env", override=False)
+load_dotenv()  # fallback: search CWD upward for any .env
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
@@ -59,6 +70,7 @@ def _prompt_context(state: dict) -> dict:
         "topic_hint":          state.get("topic_hint"),
         "topic_used":          state.get("topic_used"),
         "structure_guide_used": state.get("structure_guide_used"),
+        "introduce_message":   state.get("introduce_message"),
     }
 
 
@@ -103,7 +115,8 @@ async def submit_writing(req: SubmitWritingRequest):
             config=_config(req.thread_id),
         )
     except Exception as e:
-        raise HTTPException(500, f"Graph error: {e}")
+        traceback.print_exc()
+        raise HTTPException(500, detail={"error": str(e), "type": type(e).__name__})
 
     snap  = _snapshot(req.thread_id)
     state = snap.values
@@ -111,16 +124,18 @@ async def submit_writing(req: SubmitWritingRequest):
     interrupt_val = _interrupt_value(req.thread_id)
     if interrupt_val and interrupt_val.get("event") == "awaiting_user_action":
         return {
-            "thread_id":                 req.thread_id,
-            "status":                    "awaiting_user_action",
-            "overall_score":             state.get("overall_score"),
-            "writing_rating":            state.get("writing_rating"),
-            "target_word_used":          state.get("target_word_used"),
+            "thread_id":                  req.thread_id,
+            "status":                     "awaiting_user_action",
+            "overall_score":              state.get("overall_score"),
+            "writing_rating":             state.get("writing_rating"),
+            "target_word_used":           state.get("target_word_used"),
             "target_word_used_correctly": state.get("target_word_used_correctly"),
-            "chat_message":              state.get("chat_message"),
-            "strengths":                 state.get("strengths", []),
-            "weakness_signals":          state.get("weakness_signals", []),
-            "suggested_actions":         state.get("suggested_actions", []),
+            "chat_message":               state.get("chat_message"),
+            "strengths":                  state.get("strengths", []),
+            "weakness_signals":           state.get("weakness_signals", []),
+            "suggested_actions":          state.get("suggested_actions", []),
+            "mastery_level_before":       state.get("mastery_level_before"),
+            "mastery_level_after":        state.get("mastery_level_after"),
         }
 
     # Validation failed → back at PAUSE 1

@@ -37,8 +37,26 @@ class WritingState(TypedDict, total=False):
     strengths:                  List[str]
     weakness_signals:           List[str]
 
+    # ── DB-loaded card metadata (set by load_context) ───────────
+    starter_templates:   List[str]   # HIGH scaffold: pre-generated starters (§10)
+    topic_hints:         List[str]   # MEDIUM scaffold: per-card hint pool
+    part_of_speech:      Optional[str]
+    example_sentences:   List[dict]  # [{sentence, context}, ...]
+
+    # ── First-encounter intro (set by introduce_word) ────────────
+    introduce_message:   Optional[str]
+
+    # ── Word check results (set by check_target_word) ───────────
+    exact_match:   bool
+    variant_match: bool
+
+    # ── Mastery tracking ─────────────────────────────────────────
+    writing_attempts_count: int      # loaded from DB; used for context
+    mastery_level_before:   Optional[int]
+    mastery_level_after:    Optional[int]
+
     # ── Attempt tracking ─────────────────────────────────────────
-    attempt_count:     int          # 1-indexed on entry to evaluate
+    attempt_count:     int          # incremented by await_user_action
     previous_attempts: List[dict]   # [{user_text, ai_feedback}] for try_again context
     last_attempt_id:   Optional[str]
 

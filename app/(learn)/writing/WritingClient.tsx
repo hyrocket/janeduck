@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -15,6 +16,14 @@ type Phase =
   | "awaiting_action"
   | "action_pending"
   | "done"
+  | "all_done"
+
+interface CardData {
+  cardId: string
+  word: string
+  definition: string
+  mastery: number
+}
 
 interface PromptCtx {
   scaffold: ScaffoldLevel
@@ -40,6 +49,7 @@ interface FeedbackData {
 }
 
 type ChatMsg =
+  | { id: string; kind: "intro"; text: string }
   | { id: string; kind: "prompt"; ctx: PromptCtx; word: string }
   | { id: string; kind: "user"; text: string }
   | { id: string; kind: "feedback"; data: FeedbackData }
@@ -56,9 +66,9 @@ interface Props {
 // ── Sub-components ────────────────────────────────────────────
 
 const SCAFFOLD_LABEL: Record<ScaffoldLevel, string> = {
-  high: "Structure",
-  medium: "Semantic",
-  low: "Micro Story",
+  high:   "Guided Mode",
+  medium: "Practice Mode",
+  low:    "Challenge Mode",
 }
 
 const SCAFFOLD_COLOR: Record<ScaffoldLevel, string> = {
@@ -68,16 +78,41 @@ const SCAFFOLD_COLOR: Record<ScaffoldLevel, string> = {
 }
 
 const RATING_STYLE: Record<WritingRating, { bg: string; label: string }> = {
-  again: { bg: "bg-red-100 text-red-600",    label: "Again" },
-  hard:  { bg: "bg-orange-100 text-orange-600", label: "Hard" },
-  good:  { bg: "bg-green-100 text-green-700",   label: "Good" },
-  easy:  { bg: "bg-emerald-100 text-emerald-700", label: "Easy" },
+  again: { bg: "bg-red-100 text-red-600",       label: "Keep practicing" },
+  hard:  { bg: "bg-orange-100 text-orange-600",  label: "Getting there" },
+  good:  { bg: "bg-green-100 text-green-700",    label: "Well done" },
+  easy:  { bg: "bg-emerald-100 text-emerald-700", label: "Excellent" },
 }
 
 function DuckAvatar() {
   return (
-    <div className="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-base shrink-0 shadow-sm">
-      🦆
+    <div className="w-11 h-11 rounded-full shrink-0 shadow-sm overflow-hidden">
+      <Image src="/duck-avatar.png" alt="JaneDuck" width={44} height={44} className="w-full h-full object-cover" />
+    </div>
+  )
+}
+
+function IntroBubble({ text }: { text: string }) {
+  return (
+    <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{text}</p>
+    </div>
+  )
+}
+
+function MasteryDots({ level }: { level: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {Array.from({ length: 5 }, (_, i) => (
+        <span
+          key={i}
+          className={`text-xs leading-none transition-opacity duration-300 ${
+            i < level ? "opacity-100" : "opacity-20"
+          }`}
+        >
+          🎖️
+        </span>
+      ))}
     </div>
   )
 }
@@ -87,7 +122,7 @@ function PromptBubble({ ctx, word }: { ctx: PromptCtx; word: string }) {
     <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%] space-y-2">
       {ctx.is_master_challenge && (
         <div className="flex items-center gap-1.5 text-purple-600 text-xs font-semibold">
-          <span>🏆</span> Master Challenge
+          <span>🚀</span> {SCAFFOLD_LABEL[ctx.scaffold]}
         </div>
       )}
 
@@ -97,9 +132,7 @@ function PromptBubble({ ctx, word }: { ctx: PromptCtx; word: string }) {
           <p className="text-sm text-gray-800 font-medium leading-relaxed bg-yellow-50 rounded-lg px-3 py-2 border border-yellow-100">
             {ctx.starter_used}
           </p>
-          <p className="text-xs text-gray-400">
-            Use <span className="font-semibold text-gray-600">&ldquo;{word}&rdquo;</span> in your answer.
-          </p>
+          <p className="text-xs text-gray-400">Fill in the blank with a phrase or clause.</p>
         </>
       )}
 
@@ -148,14 +181,22 @@ function UserBubble({ text }: { text: string }) {
   )
 }
 
+const NEXT_MODE_LABEL: Record<ScaffoldLevel, string | null> = {
+  high:   "Try Practice Mode →",
+  medium: "Try Challenge Mode →",
+  low:    null,
+}
+
 function FeedbackBubble({
   data,
   isActive,
   onAction,
+  scaffold,
 }: {
   data: FeedbackData
   isActive: boolean
   onAction: (a: UserAction) => void
+  scaffold: ScaffoldLevel
 }) {
   const rStyle = RATING_STYLE[data.writing_rating]
 
@@ -207,9 +248,14 @@ function FeedbackBubble({
       {/* Action buttons */}
       {isActive && (
         <div className="flex flex-wrap gap-2 pt-1">
-          {data.suggested_actions.map(action => (
-            <ActionButton key={action} action={action} onAction={onAction} />
-          ))}
+          {data.suggested_actions.map(action => {
+            if (action === "master_challenge") {
+              const label = NEXT_MODE_LABEL[scaffold]
+              if (!label) return null
+              return <ActionButton key={action} action={action} onAction={onAction} label={label} />
+            }
+            return <ActionButton key={action} action={action} onAction={onAction} />
+          })}
         </div>
       )}
     </div>
@@ -219,7 +265,7 @@ function FeedbackBubble({
 function MasteryBadge({ from, to }: { from: number; to: number }) {
   return (
     <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-xl px-3 py-2">
-      <span className="text-lg">⭐</span>
+      <span className="text-lg">🎖️</span>
       <div>
         <p className="text-xs font-semibold text-yellow-700">Mastery up!</p>
         <p className="text-xs text-yellow-600">
@@ -230,13 +276,13 @@ function MasteryBadge({ from, to }: { from: number; to: number }) {
   )
 }
 
-function ActionButton({ action, onAction }: { action: UserAction; onAction: (a: UserAction) => void }) {
+function ActionButton({ action, onAction, label }: { action: UserAction; onAction: (a: UserAction) => void; label?: string }) {
   const styles: Record<UserAction, string> = {
     try_again:        "bg-yellow-400 hover:bg-yellow-500 text-yellow-900 active:scale-95",
     master_challenge: "bg-purple-500 hover:bg-purple-600 text-white active:scale-95",
     next_word:        "bg-gray-100 hover:bg-gray-200 text-gray-600 active:scale-95",
   }
-  const labels: Record<UserAction, string> = {
+  const defaultLabels: Record<UserAction, string> = {
     try_again:        "↩ Try Again",
     master_challenge: "🏆 Master Challenge",
     next_word:        "Next Word →",
@@ -247,7 +293,7 @@ function ActionButton({ action, onAction }: { action: UserAction; onAction: (a: 
       onClick={() => onAction(action)}
       className={`text-sm font-medium px-4 py-2 rounded-xl transition-all duration-100 ${styles[action]}`}
     >
-      {labels[action]}
+      {label ?? defaultLabels[action]}
     </button>
   )
 }
@@ -275,10 +321,14 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
   const [validationError, setValidationError] = useState<string | null>(null)
   const [currentScaffold, setCurrentScaffold] = useState<ScaffoldLevel>("high")
   const [error, setError] = useState<string | null>(null)
+  const [card, setCard] = useState<CardData>({ cardId, word, definition, mastery })
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const startedRef = useRef(false)
 
   useEffect(() => {
+    if (startedRef.current) return
+    startedRef.current = true
     startSession()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -292,11 +342,34 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
     }
   }, [phase])
 
+  // Pre-fill textarea with starter prefix when a high scaffold prompt arrives
+  useEffect(() => {
+    if (messages.length === 0) return
+    const last = messages[messages.length - 1]
+    if (
+      last.kind === "prompt" &&
+      last.ctx.scaffold === "high" &&
+      last.ctx.starter_used?.includes("___")
+    ) {
+      const prefix = last.ctx.starter_used.split("___")[0].trimEnd()
+      setDraft(prefix + " ")
+    }
+  }, [messages]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Sync textarea height when draft is set programmatically
+  useEffect(() => {
+    const ta = textareaRef.current
+    if (!ta) return
+    ta.style.height = "auto"
+    ta.style.height = `${Math.min(ta.scrollHeight, 120)}px`
+  }, [draft])
+
   function addMessage(msg: ChatMsg) {
     setMessages(prev => [...prev, msg])
   }
 
-  async function startSession() {
+  async function startSession(c?: CardData) {
+    const active = c ?? card
     setPhase("loading")
     setError(null)
     try {
@@ -304,16 +377,22 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          card_id: cardId,
-          word,
-          definition,
+          card_id: active.cardId,
+          word:    active.word,
+          definition: active.definition,
           user_id: userId,
           session_id: sessionId,
-          mastery_level: mastery,
+          mastery_level: active.mastery,
         }),
       })
       if (!res.ok) throw new Error("Failed to start writing session")
       const data = await res.json()
+
+      // First-encounter intro (introduce_word node, only when writing_attempts_count == 0)
+      if (data.introduce_message) {
+        addMessage({ id: `intro-${Date.now()}`, kind: "intro", text: data.introduce_message })
+      }
+
       const ctx: PromptCtx = {
         scaffold:             data.scaffold,
         is_master_challenge:  data.is_master_challenge ?? false,
@@ -324,11 +403,35 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
       }
       setThreadId(data.thread_id)
       setCurrentScaffold(data.scaffold ?? "high")
-      addMessage({ id: `prompt-${Date.now()}`, kind: "prompt", ctx, word })
+      addMessage({ id: `prompt-${Date.now()}`, kind: "prompt", ctx, word: active.word })
       setPhase("awaiting_input")
     } catch {
       setError("Couldn't connect to JaneDuck. Is the Python server running?")
       setPhase("loading")
+    }
+  }
+
+  function startNextCard() {
+    try {
+      const raw = sessionStorage.getItem("writingQueue")
+      if (!raw) { setPhase("all_done"); return }
+      const queue: CardData[] = JSON.parse(raw)
+      const remaining = queue.slice(1)
+      if (remaining.length === 0) {
+        sessionStorage.removeItem("writingQueue")
+        setPhase("all_done")
+        return
+      }
+      const next = remaining[0]
+      sessionStorage.setItem("writingQueue", JSON.stringify(remaining))
+      setMessages([])
+      setDraft("")
+      setValidationError(null)
+      setError(null)
+      setCard(next)
+      startSession(next)
+    } catch {
+      setPhase("all_done")
     }
   }
 
@@ -346,8 +449,11 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ thread_id: threadId, user_text: userText }),
       })
-      if (!res.ok) throw new Error("Submit failed")
       const data = await res.json()
+      if (!res.ok) {
+        const detail = data?.detail?.error ?? data?.error ?? JSON.stringify(data)
+        throw new Error(`Submit failed (${res.status}): ${detail}`)
+      }
 
       if (data.status === "awaiting_user_text") {
         // validation rejected — show error and re-open input
@@ -370,9 +476,13 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
         mastery_level_after:       data.mastery_level_after,
       }
       addMessage({ id: `feedback-${Date.now()}`, kind: "feedback", data: feedbackData })
+      if (data.mastery_level_after != null) {
+        setCard(prev => ({ ...prev, mastery: data.mastery_level_after as number }))
+      }
       setPhase("awaiting_action")
-    } catch {
-      setError("Something went wrong. Please try again.")
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Something went wrong."
+      setError(msg)
       setDraft(userText)
       setPhase("awaiting_input")
     }
@@ -392,7 +502,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
       const data = await res.json()
 
       if (data.status === "done") {
-        setPhase("done")
+        startNextCard()
         return
       }
 
@@ -406,7 +516,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
         structure_guide_used: data.structure_guide_used ?? null,
       }
       setCurrentScaffold(data.scaffold ?? currentScaffold)
-      addMessage({ id: `prompt-${Date.now()}`, kind: "prompt", ctx, word })
+      addMessage({ id: `prompt-${Date.now()}`, kind: "prompt", ctx, word: card.word })
       setPhase("awaiting_input")
     } catch {
       setError("Something went wrong.")
@@ -438,13 +548,16 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
         </button>
 
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-800 text-base leading-tight truncate">{word}</p>
-          <p className="text-xs text-gray-400 truncate">{definition}</p>
+          <p className="font-semibold text-gray-800 text-base leading-tight truncate">{card.word}</p>
+          <p className="text-xs text-gray-400 truncate">{card.definition}</p>
         </div>
 
-        <span className={`text-xs font-medium px-2.5 py-1 rounded-full shrink-0 ${SCAFFOLD_COLOR[currentScaffold]}`}>
-          {SCAFFOLD_LABEL[currentScaffold]}
-        </span>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${SCAFFOLD_COLOR[currentScaffold]}`}>
+            {SCAFFOLD_LABEL[currentScaffold]}
+          </span>
+          <MasteryDots level={card.mastery} />
+        </div>
       </div>
 
       {/* ── Chat window ─────────────────────────────────────── */}
@@ -463,7 +576,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
           <div className="flex flex-col items-center gap-3 py-8">
             <p className="text-sm text-red-500 text-center">{error}</p>
             <button
-              onClick={startSession}
+              onClick={() => startSession()}
               className="text-sm font-medium text-yellow-600 bg-yellow-50 px-4 py-2 rounded-xl hover:bg-yellow-100 transition-colors"
             >
               Try again
@@ -474,6 +587,13 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
         {/* Messages */}
         {messages.map((msg, i) => (
           <div key={msg.id}>
+            {msg.kind === "intro" && (
+              <div className="flex items-start gap-2">
+                <DuckAvatar />
+                <IntroBubble text={msg.text} />
+              </div>
+            )}
+
             {msg.kind === "prompt" && (
               <div className="flex items-start gap-2">
                 <DuckAvatar />
@@ -494,6 +614,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
                   data={msg.data}
                   isActive={phase === "awaiting_action" && isLastMsg(i)}
                   onAction={handleAction}
+                  scaffold={currentScaffold}
                 />
               </div>
             )}
@@ -516,14 +637,14 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
           </div>
         )}
 
-        {/* Done state */}
-        {phase === "done" && (
+        {/* All done — queue exhausted */}
+        {phase === "all_done" && (
           <div className="flex flex-col items-center gap-3 py-6">
             <div className="flex items-start gap-2 w-full">
               <DuckAvatar />
               <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                 <p className="text-sm text-gray-700">
-                  Great work on <span className="font-semibold text-yellow-600">&ldquo;{word}&rdquo;</span>! See you next time. 🦆
+                  Amazing work today! You&apos;ve written all your words. See you next time. 🦆
                 </p>
               </div>
             </div>
@@ -555,7 +676,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`
               }}
               onKeyDown={handleKeyDown}
-              placeholder={`Write your sentence using "${word}"…`}
+              placeholder={`Write your sentence using "${card.word}"…`}
               rows={1}
               className="flex-1 resize-none rounded-2xl border border-gray-200 px-4 py-3 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100 transition-colors leading-relaxed overflow-hidden"
               style={{ minHeight: "44px", maxHeight: "120px" }}

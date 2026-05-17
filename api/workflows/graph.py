@@ -3,23 +3,27 @@ Writing Mode LangGraph workflow — DESIGN_DECISIONS.md §7.
 
 Flow:
   START
+  → load_context                                    (DB: card + user_card)
+  → introduce_word                                  (first encounter only — LLM intro)
   → determine_scaffold
   → prompt_high / prompt_medium / prompt_low        (scaffold router)
   → await_user_input                                (PAUSE 1: student writes)
   → validate_input   ──(invalid)──→ await_user_input (re-prompt loop)
   → check_target_word
-  → evaluate_writing                                (only LLM call)
-  → update_srs_mastery
+  → evaluate_writing                                (LLM — evaluation)
+  → update_srs_mastery                              (DB write + mastery)
   → present_feedback
   → await_user_action                               (PAUSE 2: student chooses)
-  → try_again  → await_user_input  (same scaffold)
-  → master_challenge → prompt_*    (scaffold bumped in await_user_action)
+  → try_again  → prompt_*  (same scaffold, prompt reused)
+  → master_challenge → prompt_*  (scaffold bumped)
   → next_word  → END
 """
 from langgraph.graph import StateGraph, END
 
 from workflows.state import WritingState
 from workflows.nodes import (
+    load_context_node,
+    introduce_word_node,
     determine_scaffold_node,
     prompt_high_node, prompt_medium_node, prompt_low_node,
     await_user_input_node, validate_input_node,
@@ -57,6 +61,8 @@ def build_writing_graph(checkpointer=None):
     builder = StateGraph(WritingState)
 
     # ── Nodes ─────────────────────────────────────────────────
+    builder.add_node("load_context",        load_context_node)
+    builder.add_node("introduce_word",      introduce_word_node)
     builder.add_node("determine_scaffold",  determine_scaffold_node)
     builder.add_node("prompt_high",         prompt_high_node)
     builder.add_node("prompt_medium",       prompt_medium_node)
@@ -70,7 +76,11 @@ def build_writing_graph(checkpointer=None):
     builder.add_node("await_user_action",   await_user_action_node)
 
     # ── Entry point ────────────────────────────────────────────
-    builder.set_entry_point("determine_scaffold")
+    builder.set_entry_point("load_context")
+
+    # ── load_context → introduce_word → determine_scaffold ───────
+    builder.add_edge("load_context",   "introduce_word")
+    builder.add_edge("introduce_word", "determine_scaffold")
 
     # ── Edges ──────────────────────────────────────────────────
 

@@ -13,7 +13,7 @@ from workflows.state import WritingState
 _OUTPUT_SCHEMA = {
     "type": "object",
     "properties": {
-        "overall_score":               {"type": "integer", "minimum": 0, "maximum": 10},
+        "overall_score":               {"type": "integer"},
         "writing_rating":              {"type": "string", "enum": ["again", "hard", "good", "easy"]},
         "target_word_used":            {"type": "boolean"},
         "target_word_used_correctly":  {"type": "boolean"},
@@ -132,6 +132,14 @@ def _build_user(state: WritingState) -> str:
             lines.append(f'Topic given: "{state["topic_used"]}"')
         if state.get("structure_guide_used"):
             lines.append(f'Structure guide: "{state["structure_guide_used"]}"')
+
+    # Inform LLM when student used a variant/inflected form (not exact match)
+    if state.get("exact_match") is False and state.get("variant_match"):
+        lines.append(
+            f'Note: student used a variant/inflected form of "{word}" (not the exact word). '
+            "Factor this into target_word_used_correctly — variant usage is valid but note it "
+            "if the inflection changes the meaning significantly."
+        )
 
     prev = state.get("previous_attempts") or []
     if prev:

@@ -12,9 +12,10 @@ def await_user_input_node(state: WritingState) -> dict:
 
 
 def validate_input_node(state: WritingState) -> dict:
-    # STUB — always valid unless empty.
-    # Real impl: check gibberish / non-English / minimum length.
     text = (state.get("user_text") or "").strip()
     if not text:
         return {"validation_error": "Please write something before submitting."}
-    return {"validation_error": None}
+    if len(text) < 5:
+        return {"validation_error": "That's a bit short — try writing at least one full sentence."}
+    # Reset attempt ID so update_srs_mastery generates a fresh deterministic ID for this submission
+    return {"validation_error": None, "last_attempt_id": None}

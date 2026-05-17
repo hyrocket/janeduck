@@ -66,6 +66,25 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
     setTimeout(() => setToast(null), 2000)
   }
 
+  const goToWriting = (fromIndex: number) => {
+    if (!isAuthed) { router.push("/login"); return }
+    const queue = cards.slice(fromIndex).map(c => ({
+      cardId: c.id,
+      word: c.word,
+      definition: c.definition,
+      mastery: c.user_card?.mastery_level ?? 0,
+    }))
+    sessionStorage.setItem("writingQueue", JSON.stringify(queue))
+    const first = queue[0]
+    const params = new URLSearchParams({
+      cardId: first.cardId,
+      word: first.word,
+      definition: first.definition,
+      mastery: String(first.mastery),
+    })
+    router.push(`/writing?${params}`)
+  }
+
   const goNext = () => {
     if (index >= cards.length - 1) return
     setAnimDir("right")
@@ -155,16 +174,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
               onStar={handleStar}
               onSwipeLeft={goPrev}
               onSwipeRight={goNext}
-              onSwipeUp={() => {
-                if (!isAuthed) { router.push("/login"); return }
-                const params = new URLSearchParams({
-                  cardId: card.id,
-                  word: card.word,
-                  definition: card.definition,
-                  mastery: String(card.user_card?.mastery_level ?? 0),
-                })
-                router.push(`/writing?${params}`)
-              }}
+              onSwipeUp={() => goToWriting(index)}
             />
           </div>
 
@@ -178,16 +188,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
               ← prev
             </button>
             <button
-              onClick={() => {
-                if (!isAuthed) { router.push("/login"); return }
-                const params = new URLSearchParams({
-                  cardId: card.id,
-                  word: card.word,
-                  definition: card.definition,
-                  mastery: String(card.user_card?.mastery_level ?? 0),
-                })
-                router.push(`/writing?${params}`)
-              }}
+              onClick={() => goToWriting(index)}
               className="text-xs text-yellow-500 font-medium active:text-yellow-700"
             >
               ✏️ Write

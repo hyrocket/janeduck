@@ -67,7 +67,7 @@ export default async function DecksPage() {
             className="flex items-center gap-1.5 text-xs font-medium text-yellow-600 bg-yellow-100 px-3 py-1.5 rounded-full hover:bg-yellow-200 hover:shadow-sm active:scale-95 transition-all duration-150"
           >
             <span className="text-sm leading-none">★</span>
-            별표 카드
+            Starred
           </Link>
         </div>
 
