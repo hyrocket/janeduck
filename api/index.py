@@ -1,7 +1,7 @@
 import os
 import uuid
+import asyncio
 import traceback
-from contextlib import asynccontextmanager
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -21,35 +21,40 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from workflows.graph import build_writing_graph
 from models.writing import StartWritingRequest, SubmitWritingRequest, ActionRequest
 
-writing_graph = None
+# Lazy-initialized per cold-start. Reused across warm invocations.
+_pool: AsyncConnectionPool | None = None
+_writing_graph = None
+_init_lock = asyncio.Lock()
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    global writing_graph
-    # Use unpooled (direct) connection for checkpointer — pgbouncer transaction mode
-    # can interfere with DDL in setup() and with multi-statement checkpoint operations.
-    conninfo = os.environ.get("DATABASE_URL_UNPOOLED") or os.environ["DATABASE_URL"]
-    pool = AsyncConnectionPool(
-        conninfo=conninfo,
-        min_size=1,
-        max_size=5,
-        kwargs={"autocommit": True, "prepare_threshold": 0},
-        open=False,
-    )
-    await pool.open()
-    checkpointer = AsyncPostgresSaver(pool)
-    await checkpointer.setup()  # Creates checkpoint tables if not exist; safe to call repeatedly
-    writing_graph = build_writing_graph(checkpointer)
-    yield
-    await pool.close()
+async def get_graph():
+    """Lazy init: opens pool and compiles graph on first call per cold-start."""
+    global _pool, _writing_graph
+    if _writing_graph is not None:
+        return _writing_graph
+    async with _init_lock:
+        if _writing_graph is not None:
+            return _writing_graph
+        conninfo = os.environ.get("DATABASE_URL_UNPOOLED") or os.environ["DATABASE_URL"]
+        _pool = AsyncConnectionPool(
+            conninfo=conninfo,
+            min_size=1,
+            max_size=3,
+            kwargs={"autocommit": True, "prepare_threshold": 0},
+            open=False,
+        )
+        await _pool.open()
+        checkpointer = AsyncPostgresSaver(_pool)
+        await checkpointer.setup()
+        _writing_graph = build_writing_graph(checkpointer)
+        return _writing_graph
 
 
-app = FastAPI(title="JaneDuck API", lifespan=lifespan)
+app = FastAPI(title="JaneDuck API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "https://janeduck.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -67,8 +72,8 @@ def _config(thread_id: str) -> dict:
     return {"configurable": {"thread_id": thread_id}}
 
 
-async def _snapshot(thread_id: str):
-    return await writing_graph.aget_state(_config(thread_id))
+async def _snapshot(graph, thread_id: str):
+    return await graph.aget_state(_config(thread_id))
 
 
 def _interrupt_value(snap) -> dict | None:
@@ -95,11 +100,7 @@ def _prompt_context(state: dict) -> dict:
 
 @app.post("/writing/start")
 async def start_writing(req: StartWritingRequest):
-    """
-    Start a new writing session for a card.
-    Returns thread_id + the prompt context the frontend needs to show.
-    Graph runs until PAUSE 1 (await_user_input).
-    """
+    graph     = await get_graph()
     thread_id = str(uuid.uuid4())
     initial   = {
         "card_id":       req.card_id,
@@ -109,9 +110,9 @@ async def start_writing(req: StartWritingRequest):
         "session_id":    req.session_id,
         "mastery_level": req.mastery_level,
     }
-    await writing_graph.ainvoke(initial, config=_config(thread_id))
+    await graph.ainvoke(initial, config=_config(thread_id))
 
-    snap  = await _snapshot(thread_id)
+    snap  = await _snapshot(graph, thread_id)
     state = snap.values
     return {
         "thread_id": thread_id,
@@ -122,13 +123,9 @@ async def start_writing(req: StartWritingRequest):
 
 @app.post("/writing/submit")
 async def submit_writing(req: SubmitWritingRequest):
-    """
-    Resume with the student's writing.
-    Graph runs from validate_input → evaluate_writing → present_feedback,
-    then pauses at PAUSE 2 (await_user_action).
-    """
+    graph = await get_graph()
     try:
-        await writing_graph.ainvoke(
+        await graph.ainvoke(
             Command(resume=req.user_text),
             config=_config(req.thread_id),
         )
@@ -136,7 +133,7 @@ async def submit_writing(req: SubmitWritingRequest):
         traceback.print_exc()
         raise HTTPException(500, detail={"error": str(e), "type": type(e).__name__})
 
-    snap          = await _snapshot(req.thread_id)
+    snap          = await _snapshot(graph, req.thread_id)
     state         = snap.values
     interrupt_val = _interrupt_value(snap)
 
@@ -156,7 +153,6 @@ async def submit_writing(req: SubmitWritingRequest):
             "mastery_level_after":        state.get("mastery_level_after"),
         }
 
-    # Validation failed → back at PAUSE 1
     if interrupt_val and interrupt_val.get("event") == "awaiting_user_text":
         return {
             "thread_id":        req.thread_id,
@@ -170,27 +166,21 @@ async def submit_writing(req: SubmitWritingRequest):
 
 @app.post("/writing/action")
 async def choose_action(req: ActionRequest):
-    """
-    Resume with user's chosen action.
-    - next_word → graph ends, returns status "done"
-    - try_again / master_challenge → graph pauses at PAUSE 1 again, returns new prompt
-    """
+    graph = await get_graph()
     try:
-        await writing_graph.ainvoke(
+        await graph.ainvoke(
             Command(resume=req.action),
             config=_config(req.thread_id),
         )
     except Exception as e:
         raise HTTPException(500, f"Graph error: {e}")
 
-    snap  = await _snapshot(req.thread_id)
+    snap  = await _snapshot(graph, req.thread_id)
     state = snap.values
 
-    # Graph finished (next_word hit END)
     if not snap.next:
         return {"thread_id": req.thread_id, "status": "done"}
 
-    # Graph paused at PAUSE 1 for the next writing attempt
     return {
         "thread_id": req.thread_id,
         "status":    "awaiting_user_text",
@@ -200,5 +190,5 @@ async def choose_action(req: ActionRequest):
 
 # Vercel Python Function handler.
 # api_gateway_base_path strips "/api/py" so FastAPI sees "/writing/start" etc.
-# Local dev (uvicorn) ignores this handler entirely.
+# Local dev (uvicorn via run.py) ignores this handler entirely.
 handler = Mangum(app, api_gateway_base_path="/api/py")
