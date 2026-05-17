@@ -1,6 +1,5 @@
 import os
 import uuid
-import asyncio
 import traceback
 from pathlib import Path
 from dotenv import load_dotenv
@@ -15,40 +14,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 from langgraph.types import Command
-from psycopg_pool import AsyncConnectionPool
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 from workflows.graph import build_writing_graph
 from models.writing import StartWritingRequest, SubmitWritingRequest, ActionRequest
-
-# Lazy-initialized per cold-start. Reused across warm invocations.
-_pool: AsyncConnectionPool | None = None
-_writing_graph = None
-_init_lock = asyncio.Lock()
-
-
-async def get_graph():
-    """Lazy init: opens pool and compiles graph on first call per cold-start."""
-    global _pool, _writing_graph
-    if _writing_graph is not None:
-        return _writing_graph
-    async with _init_lock:
-        if _writing_graph is not None:
-            return _writing_graph
-        conninfo = os.environ.get("DATABASE_URL_UNPOOLED") or os.environ["DATABASE_URL"]
-        _pool = AsyncConnectionPool(
-            conninfo=conninfo,
-            min_size=1,
-            max_size=3,
-            kwargs={"autocommit": True, "prepare_threshold": 0},
-            open=False,
-        )
-        await _pool.open()
-        checkpointer = AsyncPostgresSaver(_pool)
-        await checkpointer.setup()
-        _writing_graph = build_writing_graph(checkpointer)
-        return _writing_graph
-
 
 app = FastAPI(title="JaneDuck API")
 
@@ -61,30 +30,21 @@ app.add_middleware(
 )
 
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+def _conninfo() -> str:
+    return os.environ.get("DATABASE_URL_UNPOOLED") or os.environ["DATABASE_URL"]
 
-
-# ── Helpers ───────────────────────────────────────────────────
 
 def _config(thread_id: str) -> dict:
     return {"configurable": {"thread_id": thread_id}}
 
 
-async def _snapshot(graph, thread_id: str):
-    return await graph.aget_state(_config(thread_id))
-
-
 def _interrupt_value(snap) -> dict | None:
-    """Returns the interrupt payload from the paused node, or None if finished."""
     if snap.tasks and snap.tasks[0].interrupts:
         return snap.tasks[0].interrupts[0].value
     return None
 
 
 def _prompt_context(state: dict) -> dict:
-    """Fields the frontend needs to render the writing prompt."""
     return {
         "scaffold":             state.get("current_scaffold"),
         "is_master_challenge":  state.get("is_master_challenge", False),
@@ -96,99 +56,106 @@ def _prompt_context(state: dict) -> dict:
     }
 
 
-# ── Routes ────────────────────────────────────────────────────
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 
 @app.post("/writing/start")
 async def start_writing(req: StartWritingRequest):
-    graph     = await get_graph()
-    thread_id = str(uuid.uuid4())
-    initial   = {
-        "card_id":       req.card_id,
-        "word":          req.word,
-        "definition":    req.definition,
-        "user_id":       req.user_id,
-        "session_id":    req.session_id,
-        "mastery_level": req.mastery_level,
-    }
-    await graph.ainvoke(initial, config=_config(thread_id))
-
-    snap  = await _snapshot(graph, thread_id)
-    state = snap.values
-    return {
-        "thread_id": thread_id,
-        "status":    "awaiting_user_text",
-        **_prompt_context(state),
-    }
+    async with AsyncPostgresSaver.from_conn_string(_conninfo()) as checkpointer:
+        await checkpointer.setup()
+        graph     = build_writing_graph(checkpointer)
+        thread_id = str(uuid.uuid4())
+        initial   = {
+            "card_id":       req.card_id,
+            "word":          req.word,
+            "definition":    req.definition,
+            "user_id":       req.user_id,
+            "session_id":    req.session_id,
+            "mastery_level": req.mastery_level,
+        }
+        await graph.ainvoke(initial, config=_config(thread_id))
+        snap  = await graph.aget_state(_config(thread_id))
+        state = snap.values
+        return {
+            "thread_id": thread_id,
+            "status":    "awaiting_user_text",
+            **_prompt_context(state),
+        }
 
 
 @app.post("/writing/submit")
 async def submit_writing(req: SubmitWritingRequest):
-    graph = await get_graph()
-    try:
-        await graph.ainvoke(
-            Command(resume=req.user_text),
-            config=_config(req.thread_id),
-        )
-    except Exception as e:
-        traceback.print_exc()
-        raise HTTPException(500, detail={"error": str(e), "type": type(e).__name__})
+    async with AsyncPostgresSaver.from_conn_string(_conninfo()) as checkpointer:
+        await checkpointer.setup()
+        graph = build_writing_graph(checkpointer)
+        try:
+            await graph.ainvoke(
+                Command(resume=req.user_text),
+                config=_config(req.thread_id),
+            )
+        except Exception as e:
+            traceback.print_exc()
+            raise HTTPException(500, detail={"error": str(e), "type": type(e).__name__})
 
-    snap          = await _snapshot(graph, req.thread_id)
-    state         = snap.values
-    interrupt_val = _interrupt_value(snap)
+        snap          = await graph.aget_state(_config(req.thread_id))
+        state         = snap.values
+        interrupt_val = _interrupt_value(snap)
 
-    if interrupt_val and interrupt_val.get("event") == "awaiting_user_action":
-        return {
-            "thread_id":                  req.thread_id,
-            "status":                     "awaiting_user_action",
-            "overall_score":              state.get("overall_score"),
-            "writing_rating":             state.get("writing_rating"),
-            "target_word_used":           state.get("target_word_used"),
-            "target_word_used_correctly": state.get("target_word_used_correctly"),
-            "chat_message":               state.get("chat_message"),
-            "strengths":                  state.get("strengths", []),
-            "weakness_signals":           state.get("weakness_signals", []),
-            "suggested_actions":          state.get("suggested_actions", []),
-            "mastery_level_before":       state.get("mastery_level_before"),
-            "mastery_level_after":        state.get("mastery_level_after"),
-        }
+        if interrupt_val and interrupt_val.get("event") == "awaiting_user_action":
+            return {
+                "thread_id":                  req.thread_id,
+                "status":                     "awaiting_user_action",
+                "overall_score":              state.get("overall_score"),
+                "writing_rating":             state.get("writing_rating"),
+                "target_word_used":           state.get("target_word_used"),
+                "target_word_used_correctly": state.get("target_word_used_correctly"),
+                "chat_message":               state.get("chat_message"),
+                "strengths":                  state.get("strengths", []),
+                "weakness_signals":           state.get("weakness_signals", []),
+                "suggested_actions":          state.get("suggested_actions", []),
+                "mastery_level_before":       state.get("mastery_level_before"),
+                "mastery_level_after":        state.get("mastery_level_after"),
+            }
 
-    if interrupt_val and interrupt_val.get("event") == "awaiting_user_text":
-        return {
-            "thread_id":        req.thread_id,
-            "status":           "awaiting_user_text",
-            "validation_error": state.get("validation_error"),
-            **_prompt_context(state),
-        }
+        if interrupt_val and interrupt_val.get("event") == "awaiting_user_text":
+            return {
+                "thread_id":        req.thread_id,
+                "status":           "awaiting_user_text",
+                "validation_error": state.get("validation_error"),
+                **_prompt_context(state),
+            }
 
-    raise HTTPException(500, "Unexpected graph state after submit")
+        raise HTTPException(500, "Unexpected graph state after submit")
 
 
 @app.post("/writing/action")
 async def choose_action(req: ActionRequest):
-    graph = await get_graph()
-    try:
-        await graph.ainvoke(
-            Command(resume=req.action),
-            config=_config(req.thread_id),
-        )
-    except Exception as e:
-        raise HTTPException(500, f"Graph error: {e}")
+    async with AsyncPostgresSaver.from_conn_string(_conninfo()) as checkpointer:
+        await checkpointer.setup()
+        graph = build_writing_graph(checkpointer)
+        try:
+            await graph.ainvoke(
+                Command(resume=req.action),
+                config=_config(req.thread_id),
+            )
+        except Exception as e:
+            raise HTTPException(500, f"Graph error: {e}")
 
-    snap  = await _snapshot(graph, req.thread_id)
-    state = snap.values
+        snap  = await graph.aget_state(_config(req.thread_id))
+        state = snap.values
 
-    if not snap.next:
-        return {"thread_id": req.thread_id, "status": "done"}
+        if not snap.next:
+            return {"thread_id": req.thread_id, "status": "done"}
 
-    return {
-        "thread_id": req.thread_id,
-        "status":    "awaiting_user_text",
-        **_prompt_context(state),
-    }
+        return {
+            "thread_id": req.thread_id,
+            "status":    "awaiting_user_text",
+            **_prompt_context(state),
+        }
 
 
 # Vercel Python Function handler.
-# api_gateway_base_path strips "/api/py" so FastAPI sees "/writing/start" etc.
-# Local dev (uvicorn via run.py) ignores this handler entirely.
+# api_gateway_base_path strips "/api/py" prefix so FastAPI sees "/writing/start" etc.
 handler = Mangum(app, api_gateway_base_path="/api/py")
