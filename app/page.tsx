@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 
 export default async function LandingPage() {
   const session = await auth()
@@ -12,10 +13,21 @@ export default async function LandingPage() {
     <main className="min-h-screen bg-yellow-50 flex flex-col">
       {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center py-16">
-        <div className="text-7xl mb-6 select-none">🦆</div>
+        {/* Logo */}
+        <div className="mb-6">
+          <Image
+            src="/logo.png"
+            alt="JaneDuck"
+            width={120}
+            height={120}
+            className="rounded-3xl shadow-lg mx-auto"
+            priority
+          />
+        </div>
+
         <h1 className="text-4xl font-extrabold text-gray-800 mb-3">JaneDuck</h1>
         <p className="text-lg text-gray-500 max-w-xs leading-relaxed">
-          AI Writing Coach for Secondary Students
+          Micro Writing Coach for Secondary Students
         </p>
 
         {/* Features */}
