@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "writing_mode": "./workflows/graph.py:writing_graph"
+  },
+  "env": ".env"
+}

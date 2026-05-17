@@ -1,5 +1,5 @@
 from langgraph.types import interrupt
-from ..state import WritingState
+from workflows.state import WritingState
 
 
 def await_user_input_node(state: WritingState) -> dict:

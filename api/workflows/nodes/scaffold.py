@@ -1,4 +1,4 @@
-from ..state import WritingState
+from workflows.state import WritingState
 
 
 def determine_scaffold_node(state: WritingState) -> dict:

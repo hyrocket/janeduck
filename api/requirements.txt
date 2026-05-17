@@ -1,7 +1,8 @@
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
-langgraph==0.2.70
-langchain-openai==0.3.16
+langgraph==1.2.0
+langgraph-cli[inmem]==0.4.26
+langchain-openai==1.2.1
 asyncpg==0.30.0
 python-dotenv==1.0.1
 pydantic==2.10.6

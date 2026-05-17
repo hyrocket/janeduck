@@ -1,5 +1,5 @@
 from langgraph.types import interrupt
-from ..state import WritingState, UserAction
+from workflows.state import WritingState, UserAction
 
 # ── present_feedback — ActionSuggester rule table (§8-1) ─────
 

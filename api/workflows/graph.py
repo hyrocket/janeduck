@@ -17,10 +17,9 @@ Flow:
   → next_word  → END
 """
 from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
 
-from .state import WritingState
-from .nodes import (
+from workflows.state import WritingState
+from workflows.nodes import (
     determine_scaffold_node,
     prompt_high_node, prompt_medium_node, prompt_low_node,
     await_user_input_node, validate_input_node,
@@ -116,7 +115,7 @@ def build_writing_graph():
         },
     )
 
-    return builder.compile(checkpointer=MemorySaver())
+    return builder.compile(name="writing_mode")
 
 
 # Singleton — imported by FastAPI routes

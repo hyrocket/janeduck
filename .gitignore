@@ -28,6 +28,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+api/.env
 
 # Python
 __pycache__/
@@ -35,6 +36,7 @@ __pycache__/
 .venv/
 api/.venv/
 *.egg-info/
+api/.langgraph_api/
 
 # Claude
 .claude/

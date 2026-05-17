@@ -6,7 +6,7 @@ import os
 import json
 from typing import Optional
 from openai import AsyncOpenAI
-from ..state import WritingState
+from workflows.state import WritingState
 
 # ── OpenAI structured output schema (§8) ─────────────────────
 

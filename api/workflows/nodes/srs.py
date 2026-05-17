@@ -1,4 +1,4 @@
-from ..state import WritingState
+from workflows.state import WritingState
 
 
 async def update_srs_mastery_node(state: WritingState) -> dict:

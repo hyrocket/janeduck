@@ -1,4 +1,4 @@
-from ..state import WritingState
+from workflows.state import WritingState
 
 
 def check_target_word_node(state: WritingState) -> dict:
