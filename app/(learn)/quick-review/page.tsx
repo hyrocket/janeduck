@@ -117,7 +117,7 @@ function buildQueue(cards: CardRow[], ucMap: Map<string, UcRow>): QueueCard[] {
 
   // ── 3. Progress-based ratios (SRS_SPEC §2-2) ──────────────
   const progress = cards.length > 0 ? ucMap.size / cards.length : 0
-  let [newRatio, reviewRatio, starredRatio] =
+  const [newRatio, , starredRatio] =
     progress < 0.3  ? [0.6, 0.3, 0.1] :
     progress <= 0.7 ? [0.3, 0.5, 0.2] :
                       [0.1, 0.7, 0.2]

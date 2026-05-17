@@ -103,7 +103,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
     const willStar = !starredIds.has(card.id)
     setStarredIds(prev => {
       const next = new Set(prev)
-      willStar ? next.add(card.id) : next.delete(card.id)
+      if (willStar) { next.add(card.id) } else { next.delete(card.id) }
       return next
     })
     try {
@@ -112,7 +112,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
       // revert
       setStarredIds(prev => {
         const next = new Set(prev)
-        willStar ? next.delete(card.id) : next.add(card.id)
+        if (willStar) { next.delete(card.id) } else { next.add(card.id) }
         return next
       })
       showToast("Failed to save — check connection")
@@ -155,7 +155,16 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
               onStar={handleStar}
               onSwipeLeft={goPrev}
               onSwipeRight={goNext}
-              onSwipeUp={() => showToast("Writing Mode coming soon")}
+              onSwipeUp={() => {
+                if (!isAuthed) { router.push("/login"); return }
+                const params = new URLSearchParams({
+                  cardId: card.id,
+                  word: card.word,
+                  definition: card.definition,
+                  mastery: String(card.user_card?.mastery_level ?? 0),
+                })
+                router.push(`/writing?${params}`)
+              }}
             />
           </div>
 
@@ -168,7 +177,21 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
             >
               ← prev
             </button>
-            <span className="text-xs text-gray-300">swipe up for writing</span>
+            <button
+              onClick={() => {
+                if (!isAuthed) { router.push("/login"); return }
+                const params = new URLSearchParams({
+                  cardId: card.id,
+                  word: card.word,
+                  definition: card.definition,
+                  mastery: String(card.user_card?.mastery_level ?? 0),
+                })
+                router.push(`/writing?${params}`)
+              }}
+              className="text-xs text-yellow-500 font-medium active:text-yellow-700"
+            >
+              ✏️ Write
+            </button>
             <button
               onClick={goNext}
               disabled={index === cards.length - 1}
