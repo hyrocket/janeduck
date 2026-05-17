@@ -17,8 +17,8 @@ export default async function QuickReviewPage({ searchParams }: Props) {
   const [deckRows, cards] = await Promise.all([
     sql`SELECT name FROM decks WHERE id = ${deckId} LIMIT 1`,
     sql`
-      SELECT id, word, definition, part_of_speech, example_sentences,
-             difficulty_band, order_in_deck
+      SELECT id, word, definition, part_of_speech, pronunciation,
+             example_sentences, difficulty_band, order_in_deck
       FROM cards
       WHERE deck_id = ${deckId}
       ORDER BY order_in_deck
@@ -62,6 +62,7 @@ interface CardRow {
   word: string
   definition: string
   part_of_speech: string | null
+  pronunciation: string | null
   example_sentences: { sentence: string; context?: string }[] | null
   difficulty_band: string | null
   order_in_deck: number

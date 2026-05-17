@@ -10,6 +10,7 @@ interface CardData {
   word: string
   definition: string
   part_of_speech: string | null
+  pronunciation: string | null
   example_sentences: { sentence: string; context?: string }[] | null
   user_card: null | {
     srs_state: string
@@ -147,6 +148,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
               word={card.word}
               definition={card.definition}
               part_of_speech={card.part_of_speech}
+              pronunciation={card.pronunciation}
               example_sentences={card.example_sentences}
               isStarred={isStarred}
               onStar={handleStar}

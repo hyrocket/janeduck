@@ -10,6 +10,7 @@ interface FlashCardProps {
   word: string
   definition: string
   part_of_speech: string | null
+  pronunciation?: string | null
   example_sentences: ExampleSentence[] | null
   isStarred?: boolean
   onStar?: () => void
@@ -24,6 +25,7 @@ export default function FlashCard({
   word,
   definition,
   part_of_speech,
+  pronunciation,
   example_sentences,
   isStarred,
   onStar,
@@ -97,7 +99,7 @@ export default function FlashCard({
           className="absolute inset-0 bg-white rounded-3xl shadow-lg"
           style={{ backfaceVisibility: "hidden" }}
         >
-          <CardFront word={word} part_of_speech={part_of_speech} />
+          <CardFront word={word} part_of_speech={part_of_speech} pronunciation={pronunciation} />
         </div>
 
         {/* Back */}
