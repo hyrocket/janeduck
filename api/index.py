@@ -198,5 +198,7 @@ async def choose_action(req: ActionRequest):
     }
 
 
-# Vercel Python Function handler
-handler = Mangum(app)
+# Vercel Python Function handler.
+# api_gateway_base_path strips "/api/py" so FastAPI sees "/writing/start" etc.
+# Local dev (uvicorn) ignores this handler entirely.
+handler = Mangum(app, api_gateway_base_path="/api/py")
