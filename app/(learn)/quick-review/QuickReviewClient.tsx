@@ -11,7 +11,12 @@ interface CardData {
   definition: string
   part_of_speech: string | null
   example_sentences: { sentence: string; context?: string }[] | null
-  user_card: null | { srs_state: string; mastery_level: number; is_starred: boolean }
+  user_card: null | {
+    srs_state: string
+    mastery_level: number
+    is_starred: boolean
+    last_self_eval_rating: string | null
+  }
 }
 
 interface Props {
@@ -23,8 +28,24 @@ interface Props {
 export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) {
   const [index, setIndex] = useState(0)
   const [saving, setSaving] = useState(false)
-  const [rated, setRated] = useState<Set<string>>(new Set())
+  const [animDir, setAnimDir] = useState<"left" | "right" | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+
+  // per-card self-eval ratings (pre-seeded from server data)
+  const [ratings, setRatings] = useState<Record<string, SelfEvalRating>>(() => {
+    const map: Record<string, SelfEvalRating> = {}
+    for (const c of cards) {
+      if (c.user_card?.last_self_eval_rating) {
+        map[c.id] = c.user_card.last_self_eval_rating as SelfEvalRating
+      }
+    }
+    return map
+  })
+
+  // per-card starred state (pre-seeded from server data)
+  const [starredIds, setStarredIds] = useState<Set<string>>(
+    () => new Set(cards.filter(c => c.user_card?.is_starred).map(c => c.id))
+  )
 
   const card = cards[index]
   if (!card) {
@@ -35,29 +56,37 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
     )
   }
 
+  const currentRating = ratings[card.id] as SelfEvalRating | undefined
+  const isStarred = starredIds.has(card.id)
+
   const showToast = (msg: string) => {
     setToast(msg)
     setTimeout(() => setToast(null), 2000)
   }
 
-  const goNext = () => setIndex(i => Math.min(i + 1, cards.length - 1))
-  const goPrev = () => setIndex(i => Math.max(i - 1, 0))
+  const goNext = () => {
+    if (index >= cards.length - 1) return
+    setAnimDir("right")
+    setIndex(i => i + 1)
+  }
+
+  const goPrev = () => {
+    if (index <= 0) return
+    setAnimDir("left")
+    setIndex(i => i - 1)
+  }
 
   const handleRate = async (rating: SelfEvalRating) => {
-    if (!isAuthed) {
-      showToast("Sign in to save your progress")
-      return
-    }
+    if (!isAuthed) { showToast("Sign in to save your progress"); return }
     if (saving) return
     setSaving(true)
-
     try {
       await fetch(`/api/cards/${card.id}/self-eval`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ self_eval_rating: rating }),
       })
-      setRated(prev => new Set(prev).add(card.id))
+      setRatings(prev => ({ ...prev, [card.id]: rating }))
       goNext()
     } catch {
       showToast("Failed to save — check connection")
@@ -66,7 +95,31 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
     }
   }
 
-  const alreadyRated = rated.has(card.id)
+  const handleStar = async () => {
+    if (!isAuthed) { showToast("Sign in to star cards"); return }
+    // optimistic update
+    const willStar = !starredIds.has(card.id)
+    setStarredIds(prev => {
+      const next = new Set(prev)
+      willStar ? next.add(card.id) : next.delete(card.id)
+      return next
+    })
+    try {
+      await fetch(`/api/cards/${card.id}/star`, { method: "POST" })
+    } catch {
+      // revert
+      setStarredIds(prev => {
+        const next = new Set(prev)
+        willStar ? next.delete(card.id) : next.add(card.id)
+        return next
+      })
+      showToast("Failed to save — check connection")
+    }
+  }
+
+  const animClass =
+    animDir === "right" ? "animate-slide-from-right" :
+    animDir === "left"  ? "animate-slide-from-left"  : ""
 
   return (
     <div className="flex flex-col h-full">
@@ -89,17 +142,21 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
       {/* Card area */}
       <div className="flex-1 flex items-center justify-center px-4 py-3 min-h-0">
         <div className="w-full">
-          <FlashCard
-            word={card.word}
-            definition={card.definition}
-            part_of_speech={card.part_of_speech}
-            example_sentences={card.example_sentences}
-            onSwipeLeft={goPrev}
-            onSwipeRight={goNext}
-            onSwipeUp={() => showToast("Writing Mode coming soon")}
-          />
+          <div key={card.id} className={animClass}>
+            <FlashCard
+              word={card.word}
+              definition={card.definition}
+              part_of_speech={card.part_of_speech}
+              example_sentences={card.example_sentences}
+              isStarred={isStarred}
+              onStar={handleStar}
+              onSwipeLeft={goPrev}
+              onSwipeRight={goNext}
+              onSwipeUp={() => showToast("Writing Mode coming soon")}
+            />
+          </div>
 
-          {/* Navigation row — tap or swipe */}
+          {/* Navigation row */}
           <div className="flex justify-between items-center mt-3 px-1">
             <button
               onClick={goPrev}
@@ -120,31 +177,12 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
         </div>
       </div>
 
-      {/* Self-eval buttons */}
+      {/* Self-eval buttons — always visible, highlights current rating */}
       <div className="pb-5 pt-1 space-y-2">
         {!isAuthed && (
           <p className="text-center text-xs text-gray-400">Sign in to save progress</p>
         )}
-        {alreadyRated ? (
-          <div className="flex justify-center gap-4 px-4">
-            <button
-              onClick={goPrev}
-              disabled={index === 0}
-              className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium disabled:opacity-30"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={goNext}
-              disabled={index === cards.length - 1}
-              className="flex-1 py-3 rounded-xl bg-yellow-400 text-white text-sm font-medium disabled:opacity-30"
-            >
-              Next →
-            </button>
-          </div>
-        ) : (
-          <SelfEvalButtons onRate={handleRate} disabled={saving} />
-        )}
+        <SelfEvalButtons onRate={handleRate} disabled={saving} currentRating={currentRating} />
       </div>
 
       {/* Toast */}

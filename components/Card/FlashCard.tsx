@@ -11,6 +11,8 @@ interface FlashCardProps {
   definition: string
   part_of_speech: string | null
   example_sentences: ExampleSentence[] | null
+  isStarred?: boolean
+  onStar?: () => void
   onSwipeLeft?: () => void
   onSwipeRight?: () => void
   onSwipeUp?: () => void
@@ -23,6 +25,8 @@ export default function FlashCard({
   definition,
   part_of_speech,
   example_sentences,
+  isStarred,
+  onStar,
   onSwipeLeft,
   onSwipeRight,
   onSwipeUp,
@@ -61,12 +65,25 @@ export default function FlashCard({
 
   return (
     <div
-      className="w-full max-w-lg mx-auto"
+      className="w-full max-w-lg mx-auto relative"
       style={{ perspective: "1000px" }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onClick={handleTap}
     >
+      {/* Star button */}
+      <button
+        className="absolute top-3 right-3 z-10 p-2 rounded-full transition-all duration-150 hover:scale-125 hover:bg-yellow-50 active:scale-110"
+        onClick={(e) => { e.stopPropagation(); onStar?.() }}
+        onTouchEnd={(e) => e.stopPropagation()}
+        aria-label={isStarred ? "Unstar card" : "Star card"}
+      >
+        <span className={`text-2xl leading-none select-none ${isStarred ? "text-yellow-400" : "text-gray-300 hover:text-yellow-300"}`}>
+          {isStarred ? "★" : "☆"}
+        </span>
+      </button>
+
+      {/* Flip card */}
       <div
         className="relative w-full transition-transform duration-500 cursor-pointer"
         style={{

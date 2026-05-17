@@ -73,6 +73,7 @@ interface UcRow {
   next_review_at: string
   mastery_level: number
   is_starred: boolean
+  last_self_eval_rating: string | null
 }
 
 function buildQueue(cards: CardRow[], ucMap: Map<string, unknown>) {
