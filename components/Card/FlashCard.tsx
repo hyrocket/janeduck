@@ -72,7 +72,7 @@ export default function FlashCard({
         style={{
           transformStyle: "preserve-3d",
           transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-          height: "clamp(280px, 45vh, 380px)",
+          height: "clamp(240px, 40vh, 360px)",
         }}
       >
         {/* Front */}

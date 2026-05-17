@@ -87,7 +87,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
       </div>
 
       {/* Card area */}
-      <div className="flex-1 flex items-center justify-center px-4 py-6">
+      <div className="flex-1 flex items-center justify-center px-4 py-3 min-h-0">
         <div className="w-full">
           <FlashCard
             word={card.word}
@@ -99,17 +99,29 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
             onSwipeUp={() => showToast("Writing Mode coming soon")}
           />
 
-          {/* Swipe hint */}
-          <div className="flex justify-between mt-4 px-2 text-xs text-gray-300 select-none">
-            <span>← prev</span>
-            <span>swipe up for writing</span>
-            <span>next →</span>
+          {/* Navigation row — tap or swipe */}
+          <div className="flex justify-between items-center mt-3 px-1">
+            <button
+              onClick={goPrev}
+              disabled={index === 0}
+              className="flex items-center gap-1 text-sm text-gray-400 disabled:opacity-20 active:text-gray-600 px-2 py-1"
+            >
+              ← prev
+            </button>
+            <span className="text-xs text-gray-300">swipe up for writing</span>
+            <button
+              onClick={goNext}
+              disabled={index === cards.length - 1}
+              className="flex items-center gap-1 text-sm text-gray-400 disabled:opacity-20 active:text-gray-600 px-2 py-1"
+            >
+              next →
+            </button>
           </div>
         </div>
       </div>
 
       {/* Self-eval buttons */}
-      <div className="pb-6 pt-2 space-y-3">
+      <div className="pb-5 pt-1 space-y-2">
         {!isAuthed && (
           <p className="text-center text-xs text-gray-400">Sign in to save progress</p>
         )}

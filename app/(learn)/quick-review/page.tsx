@@ -45,7 +45,7 @@ export default async function QuickReviewPage({ searchParams }: Props) {
   const merged = buildQueue(cards as CardRow[], ucMap)
 
   return (
-    <main className="min-h-screen bg-yellow-50">
+    <main className="bg-yellow-50 min-h-screen">
       <div className="max-w-lg mx-auto h-screen flex flex-col">
         <QuickReviewClient
           cards={merged}
