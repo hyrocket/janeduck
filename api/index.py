@@ -1,33 +1,51 @@
+import os
 import uuid
 import traceback
+from contextlib import asynccontextmanager
 from pathlib import Path
 from dotenv import load_dotenv
 
 # Load env files: .env.local overrides .env (mirrors Next.js precedence).
-# Both are at project root (one level up from this api/ directory).
 _root = Path(__file__).parent.parent
 load_dotenv(_root / ".env.local", override=False)
 load_dotenv(_root / ".env", override=False)
-load_dotenv()  # fallback: search CWD upward for any .env
+load_dotenv()
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 from langgraph.types import Command
-
-from langgraph.checkpoint.memory import MemorySaver
+from psycopg_pool import AsyncConnectionPool
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 from workflows.graph import build_writing_graph
 from models.writing import StartWritingRequest, SubmitWritingRequest, ActionRequest
 
-# Compiled once at import time — MemorySaver persists PAUSE state across requests
-# within a single server process.
-# MVP / local dev only: MemorySaver is in-process memory; state is lost on restart
-# and is NOT safe for Vercel serverless (no memory continuity between invocations).
-# Production: replace MemorySaver() with a Neon PostgreSQL-backed checkpointer.
-writing_graph = build_writing_graph(MemorySaver())
+writing_graph = None
 
-app = FastAPI(title="JaneDuck API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global writing_graph
+    # Use unpooled (direct) connection for checkpointer — pgbouncer transaction mode
+    # can interfere with DDL in setup() and with multi-statement checkpoint operations.
+    conninfo = os.environ.get("DATABASE_URL_UNPOOLED") or os.environ["DATABASE_URL"]
+    pool = AsyncConnectionPool(
+        conninfo=conninfo,
+        min_size=1,
+        max_size=5,
+        kwargs={"autocommit": True, "prepare_threshold": 0},
+        open=False,
+    )
+    await pool.open()
+    checkpointer = AsyncPostgresSaver(pool)
+    await checkpointer.setup()  # Creates checkpoint tables if not exist; safe to call repeatedly
+    writing_graph = build_writing_graph(checkpointer)
+    yield
+    await pool.close()
+
+
+app = FastAPI(title="JaneDuck API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -49,13 +67,12 @@ def _config(thread_id: str) -> dict:
     return {"configurable": {"thread_id": thread_id}}
 
 
-def _snapshot(thread_id: str):
-    return writing_graph.get_state(_config(thread_id))
+async def _snapshot(thread_id: str):
+    return await writing_graph.aget_state(_config(thread_id))
 
 
-def _interrupt_value(thread_id: str):
+def _interrupt_value(snap) -> dict | None:
     """Returns the interrupt payload from the paused node, or None if finished."""
-    snap = _snapshot(thread_id)
     if snap.tasks and snap.tasks[0].interrupts:
         return snap.tasks[0].interrupts[0].value
     return None
@@ -64,13 +81,13 @@ def _interrupt_value(thread_id: str):
 def _prompt_context(state: dict) -> dict:
     """Fields the frontend needs to render the writing prompt."""
     return {
-        "scaffold":            state.get("current_scaffold"),
-        "is_master_challenge": state.get("is_master_challenge", False),
-        "starter_used":        state.get("starter_used"),
-        "topic_hint":          state.get("topic_hint"),
-        "topic_used":          state.get("topic_used"),
+        "scaffold":             state.get("current_scaffold"),
+        "is_master_challenge":  state.get("is_master_challenge", False),
+        "starter_used":         state.get("starter_used"),
+        "topic_hint":           state.get("topic_hint"),
+        "topic_used":           state.get("topic_used"),
         "structure_guide_used": state.get("structure_guide_used"),
-        "introduce_message":   state.get("introduce_message"),
+        "introduce_message":    state.get("introduce_message"),
     }
 
 
@@ -94,7 +111,8 @@ async def start_writing(req: StartWritingRequest):
     }
     await writing_graph.ainvoke(initial, config=_config(thread_id))
 
-    state = _snapshot(thread_id).values
+    snap  = await _snapshot(thread_id)
+    state = snap.values
     return {
         "thread_id": thread_id,
         "status":    "awaiting_user_text",
@@ -118,10 +136,10 @@ async def submit_writing(req: SubmitWritingRequest):
         traceback.print_exc()
         raise HTTPException(500, detail={"error": str(e), "type": type(e).__name__})
 
-    snap  = _snapshot(req.thread_id)
-    state = snap.values
+    snap          = await _snapshot(req.thread_id)
+    state         = snap.values
+    interrupt_val = _interrupt_value(snap)
 
-    interrupt_val = _interrupt_value(req.thread_id)
     if interrupt_val and interrupt_val.get("event") == "awaiting_user_action":
         return {
             "thread_id":                  req.thread_id,
@@ -165,7 +183,7 @@ async def choose_action(req: ActionRequest):
     except Exception as e:
         raise HTTPException(500, f"Graph error: {e}")
 
-    snap  = _snapshot(req.thread_id)
+    snap  = await _snapshot(req.thread_id)
     state = snap.values
 
     # Graph finished (next_word hit END)
