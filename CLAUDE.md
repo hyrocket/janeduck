@@ -67,7 +67,7 @@ Domain: Cloudflare DNS
 
 ### 로직 분리 / 모듈화
 - SRS 로직, 판단 모듈(MasteryUpdater / ScaffoldDecider / ActionSuggester)은 **인터페이스 뒤에 두고 순수 함수로**. DB 호출과 분리. (모듈화 상세: `DESIGN_DECISIONS.md` §11)
-  - SRS interval 알고리즘 상세는 아직 미정 — `SRS_SPEC.md`(작성 예정) 참조. 그 전까지 interval 로직 임의 구현 금지.
+  - SRS는 mastery 기반 노출 우선순위 모델 (§4-4) — 전통 SM-2 아님. `review_priority` 계산식·큐 비율은 `SRS_SPEC.md`에 정의됨, 그 명세를 따를 것. SM-2 필드(state enum, ease_factor, interval_days 등) 생성 금지.
 - LLM 호출은 단일 LLM 클라이언트 추상을 거친다. 특정 공급자 SDK 직접 호출 금지.
 - AI 평가 흐름은 LangGraph 워크플로우로 구조화 (Writing Mode에 한함 — 카드 흐름은 일반 FastAPI 엔드포인트).
 
@@ -142,7 +142,8 @@ janeduck/
 ├── components/             # Card/, Writing/, ui/
 ├── data/                   # 시드 데이터 (deck JSON)
 ├── CLAUDE.md
-└── DESIGN_DECISIONS.md
+├── DESIGN_DECISIONS.md
+└── SRS_SPEC.md
 ```
 
 ---
