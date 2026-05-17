@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import FlashCard from "@/components/Card/FlashCard"
 import SelfEvalButtons from "@/components/Card/SelfEvalButtons"
 import type { SelfEvalRating } from "@/lib/types"
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) {
+  const router = useRouter()
   const [index, setIndex] = useState(0)
   const [saving, setSaving] = useState(false)
   const [animDir, setAnimDir] = useState<"left" | "right" | null>(null)
@@ -78,7 +80,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
   }
 
   const handleRate = async (rating: SelfEvalRating) => {
-    if (!isAuthed) { showToast("Sign in to save your progress"); return }
+    if (!isAuthed) { router.push("/login"); return }
     if (saving) return
     setSaving(true)
     try {
@@ -97,7 +99,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
   }
 
   const handleStar = async () => {
-    if (!isAuthed) { showToast("Sign in to star cards"); return }
+    if (!isAuthed) { router.push("/login"); return }
     // optimistic update
     const willStar = !starredIds.has(card.id)
     setStarredIds(prev => {
