@@ -53,7 +53,7 @@ def _route_after_action(state: WritingState) -> str:
 
 # ── Graph assembly ────────────────────────────────────────────
 
-def build_writing_graph():
+def build_writing_graph(checkpointer=None):
     builder = StateGraph(WritingState)
 
     # ── Nodes ─────────────────────────────────────────────────
@@ -115,8 +115,8 @@ def build_writing_graph():
         },
     )
 
-    return builder.compile(name="writing_mode")
+    return builder.compile(checkpointer=checkpointer, name="writing_mode")
 
 
-# Singleton — imported by FastAPI routes
-writing_graph = build_writing_graph()
+# Studio용 인스턴스 — langgraph.json이 참조. checkpointer 없음 (Studio가 자체 관리).
+studio_graph = build_writing_graph()

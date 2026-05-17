@@ -4,8 +4,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 from langgraph.types import Command
 
-from workflows.graph import writing_graph
+from langgraph.checkpoint.memory import MemorySaver
+
+from workflows.graph import build_writing_graph
 from models.writing import StartWritingRequest, SubmitWritingRequest, ActionRequest
+
+# Compiled once at import time — MemorySaver persists PAUSE state across requests
+# within a single server process.
+# MVP / local dev only: MemorySaver is in-process memory; state is lost on restart
+# and is NOT safe for Vercel serverless (no memory continuity between invocations).
+# Production: replace MemorySaver() with a Neon PostgreSQL-backed checkpointer.
+writing_graph = build_writing_graph(MemorySaver())
 
 app = FastAPI(title="JaneDuck API")
 
