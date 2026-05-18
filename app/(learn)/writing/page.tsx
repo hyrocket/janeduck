@@ -22,8 +22,8 @@ export default async function WritingPage({ searchParams }: Props) {
   }
 
   return (
-    <main className="bg-yellow-50 min-h-screen">
-      <div className="max-w-lg mx-auto h-screen flex flex-col">
+    <main className="bg-yellow-50 min-h-dvh">
+      <div className="max-w-lg mx-auto h-dvh flex flex-col">
         <WritingClient
           cardId={cardId}
           word={word}

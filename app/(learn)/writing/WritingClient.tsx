@@ -132,7 +132,7 @@ function PromptBubble({ ctx, word }: { ctx: PromptCtx; word: string }) {
 
       {ctx.scaffold === "high" && ctx.starter_used && (
         <>
-          <p className="text-xs text-gray-400 font-medium">Let&apos;s finish this sentence:</p>
+          <p className="text-xs text-gray-400 font-medium">Let&apos;s complete this sentence:</p>
           <p className="text-sm text-gray-800 font-medium leading-relaxed bg-yellow-50 rounded-lg px-3 py-2 border border-yellow-100">
             {ctx.starter_used}
           </p>
@@ -336,6 +336,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const startedRef = useRef(false)
+  const sessionWordIndexRef = useRef(0)
 
   const isGuest = !userId
 
@@ -401,6 +402,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
           user_id: userId,
           session_id: sessionId,
           mastery_level: active.mastery,
+          is_first_word_in_session: sessionWordIndexRef.current === 0,
         }),
       })
       if (!res.ok) throw new Error("Failed to start writing session")
@@ -442,6 +444,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
       }
       const next = remaining[0]
       sessionStorage.setItem("writingQueue", JSON.stringify(remaining))
+      sessionWordIndexRef.current += 1
       setMessages([])
       setDraft("")
       setValidationError(null)

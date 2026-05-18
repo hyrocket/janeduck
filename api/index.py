@@ -73,12 +73,13 @@ async def start_writing(req: StartWritingRequest):
         graph     = build_writing_graph(checkpointer)
         thread_id = str(uuid.uuid4())
         initial   = {
-            "card_id":       req.card_id,
-            "word":          req.word,
-            "definition":    req.definition,
-            "user_id":       req.user_id,
-            "session_id":    req.session_id,
-            "mastery_level": req.mastery_level,
+            "card_id":                  req.card_id,
+            "word":                     req.word,
+            "definition":               req.definition,
+            "user_id":                  req.user_id,
+            "session_id":               req.session_id,
+            "mastery_level":            req.mastery_level,
+            "is_first_word_in_session": req.is_first_word_in_session,
         }
         await graph.ainvoke(initial, config=_config(thread_id))
         snap  = await graph.aget_state(_config(thread_id))

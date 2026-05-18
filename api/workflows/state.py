@@ -44,7 +44,8 @@ class WritingState(TypedDict, total=False):
     example_sentences:   List[dict]  # [{sentence, context}, ...]
 
     # ── First-encounter intro (set by introduce_word) ────────────
-    introduce_message:   Optional[str]
+    is_first_word_in_session: bool
+    introduce_message:        Optional[str]
 
     # ── Word check results (set by check_target_word) ───────────
     exact_match:   bool
