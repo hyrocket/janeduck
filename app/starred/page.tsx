@@ -55,27 +55,28 @@ export default async function StarredPage() {
   return (
     <main className="min-h-screen bg-yellow-50">
       <div className="max-w-lg mx-auto px-4 py-8">
-        {/* Header */}
+        {/* JaneDuck top header */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <Link href="/decks" className="text-gray-400 hover:text-gray-600 transition-colors -ml-1 p-1">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </Link>
-            <div>
-              <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
-                Starred
-                <Image src="/logo-small.png" alt="" width={36} height={36} />
-              </h1>
-              <p className="text-xs text-gray-400 mt-0.5">{rows.length} word{rows.length !== 1 ? "s" : ""}</p>
-            </div>
-          </div>
+          <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
+            JaneDuck
+            <Image src="/logo-small.png" alt="" width={36} height={36} />
+          </h1>
           <form action={async () => { "use server"; await signOut({ redirectTo: "/" }) }}>
             <button type="submit" className="text-xs text-gray-400 hover:text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
               Sign out
             </button>
           </form>
+        </div>
+
+        {/* Section header */}
+        <div className="flex items-center gap-3 mb-6">
+          <Link href="/decks" className="text-gray-400 hover:text-gray-600 transition-colors">
+            ←
+          </Link>
+          <div>
+            <h2 className="text-lg font-bold text-gray-800">Starred Words</h2>
+            <p className="text-xs text-gray-400">{rows.length} word{rows.length !== 1 ? "s" : ""}</p>
+          </div>
         </div>
 
         {rows.length === 0 ? (
