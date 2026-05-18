@@ -1,7 +1,9 @@
 import { sql } from "@/lib/db"
 import { auth } from "@/auth"
+import { signOut } from "@/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 
 interface StarredCard {
   card_id: string
@@ -52,26 +54,29 @@ export default async function StarredPage() {
 
   return (
     <main className="min-h-screen bg-yellow-50">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
-          <Link
-            href="/decks"
-            className="text-gray-400 hover:text-gray-600 active:scale-90 transition-transform p-1 -ml-1"
-            aria-label="Back to decks"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </Link>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-800 text-base leading-tight">Starred</p>
-            <p className="text-xs text-gray-400">{rows.length} word{rows.length !== 1 ? "s" : ""}</p>
+      <div className="max-w-lg mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <Link href="/decks" className="text-gray-400 hover:text-gray-600 transition-colors -ml-1 p-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </Link>
+            <div>
+              <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
+                Starred
+                <Image src="/logo-small.png" alt="" width={36} height={36} />
+              </h1>
+              <p className="text-xs text-gray-400 mt-0.5">{rows.length} word{rows.length !== 1 ? "s" : ""}</p>
+            </div>
           </div>
+          <form action={async () => { "use server"; await signOut({ redirectTo: "/" }) }}>
+            <button type="submit" className="text-xs text-gray-400 hover:text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+              Sign out
+            </button>
+          </form>
         </div>
-      </div>
-
-      <div className="max-w-lg mx-auto px-4 py-6">
 
         {rows.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
