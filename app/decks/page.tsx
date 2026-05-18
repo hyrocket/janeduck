@@ -4,6 +4,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { signOut } from "@/auth"
 
+export const dynamic = "force-dynamic"
+
 // Gradient + emoji cover per deck level (no DB image needed for MVP)
 const COVER_STYLES: { gradient: string; emoji: string }[] = [
   { gradient: "from-sky-400 to-blue-500",      emoji: "📗" },
