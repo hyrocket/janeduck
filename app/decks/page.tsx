@@ -56,10 +56,12 @@ export default async function DecksPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
-              JaneDuck
-              <Image src="/logo-small.png" alt="" width={36} height={36} />
-            </h1>
+            <Link href="/">
+              <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
+                JaneDuck
+                <Image src="/logo-small.png" alt="" width={36} height={36} />
+              </h1>
+            </Link>
             {session?.user?.name && (
               <p className="text-xs text-gray-400 mt-0.5">Hi, {session.user.name.split(" ")[0]}</p>
             )}
