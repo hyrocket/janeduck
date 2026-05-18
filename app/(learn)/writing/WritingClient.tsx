@@ -66,9 +66,9 @@ interface Props {
 // ── Sub-components ────────────────────────────────────────────
 
 const SCAFFOLD_LABEL: Record<ScaffoldLevel, string> = {
-  high:   "Guided Mode",
-  medium: "Practice Mode",
-  low:    "Challenge Mode",
+  high:   "Guided Writing",
+  medium: "Practice Writing",
+  low:    "Extended Writing",
 }
 
 const SCAFFOLD_COLOR: Record<ScaffoldLevel, string> = {
@@ -182,8 +182,8 @@ function UserBubble({ text }: { text: string }) {
 }
 
 const NEXT_MODE_LABEL: Record<ScaffoldLevel, string | null> = {
-  high:   "Try Practice Mode →",
-  medium: "Try Challenge Mode →",
+  high:   "Next Challenge →",
+  medium: "Next Challenge →",
   low:    null,
 }
 
@@ -284,7 +284,7 @@ function ActionButton({ action, onAction, label }: { action: UserAction; onActio
   }
   const defaultLabels: Record<UserAction, string> = {
     try_again:        "↩ Try Again",
-    master_challenge: "🏆 Master Challenge",
+    master_challenge: "Next Challenge →",
     next_word:        "Next Word →",
   }
 
