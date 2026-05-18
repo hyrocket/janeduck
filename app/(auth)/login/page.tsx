@@ -7,7 +7,7 @@ export default function LoginPage() {
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm">
         <h1 className="text-2xl font-bold text-center text-yellow-500 mb-2 flex items-center justify-center gap-2">
           JaneDuck
-          <Image src="/logo-small.png" alt="" width={12} height={12} />
+          <Image src="/logo-small.png" alt="" width={36} height={36} />
         </h1>
         <p className="text-center text-gray-500 text-sm mb-8">
           Learn English words by writing, not memorizing
