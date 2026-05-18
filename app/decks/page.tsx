@@ -1,6 +1,7 @@
 import { sql } from "@/lib/db"
 import { auth } from "@/auth"
 import Link from "next/link"
+import Image from "next/image"
 import { signOut } from "@/auth"
 
 // Gradient + emoji cover per deck level (no DB image needed for MVP)
@@ -23,15 +24,31 @@ function DeckCover({ level }: { level: number }) {
 }
 
 export default async function DecksPage() {
-  const [session, decks] = await Promise.all([
-    auth(),
+  const session = await auth()
+  const userId = session?.user?.id ?? null
+
+  const [decks, masteryRows] = await Promise.all([
     sql`
       SELECT id, name, description, level, card_count
       FROM decks
       WHERE is_public = true
       ORDER BY level, name
     `,
+    userId ? sql`
+      SELECT cards.deck_id,
+             COUNT(*)::int AS studied,
+             SUM(CASE WHEN uc.mastery_level = 5 THEN 1 ELSE 0 END)::int AS mastered
+      FROM user_cards uc
+      JOIN cards ON uc.card_id = cards.id
+      WHERE uc.user_id = ${userId}
+      GROUP BY cards.deck_id
+    ` : [],
   ])
+
+  const masteryMap = new Map(
+    (masteryRows as { deck_id: string; studied: number; mastered: number }[])
+      .map(r => [r.deck_id, { studied: r.studied, mastered: r.mastered }])
+  )
 
   return (
     <main className="min-h-screen bg-yellow-50">
@@ -39,7 +56,10 @@ export default async function DecksPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-xl font-bold text-yellow-500">JaneDuck 🦆</h1>
+            <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
+              JaneDuck
+              <Image src="/logo-small.png" alt="" width={128} height={12} className="inline" />
+            </h1>
             {session?.user?.name && (
               <p className="text-xs text-gray-400 mt-0.5">Hi, {session.user.name.split(" ")[0]}</p>
             )}
@@ -72,7 +92,12 @@ export default async function DecksPage() {
         </div>
 
         <div className="space-y-3">
-          {decks.map(deck => (
+          {decks.map(deck => {
+            const total    = deck.card_count as number
+            const progress = masteryMap.get(deck.id as string) ?? null
+            const pct      = progress ? Math.round((progress.studied / total) * 100) : 0
+
+            return (
             <Link
               key={deck.id as string}
               href={`/quick-review?deckId=${deck.id}`}
@@ -94,10 +119,32 @@ export default async function DecksPage() {
                     {deck.description as string}
                   </p>
                 )}
-                <p className="text-xs text-gray-300 mt-2">{deck.card_count as number} words</p>
+
+                {/* Progress */}
+                {progress ? (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-yellow-400 rounded-full transition-all duration-300"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      {progress.mastered > 0 && (
+                        <span className="text-xs text-yellow-500 font-medium whitespace-nowrap shrink-0">
+                          🎖️ {progress.mastered} mastered
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-300">{progress.studied} / {total} studied</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-300 mt-2">{total} words</p>
+                )}
               </div>
             </Link>
-          ))}
+            )
+          })}
         </div>
 
         {!session && (

@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { signOut } from "next-auth/react"
 import FlashCard from "@/components/Card/FlashCard"
 import SelfEvalButtons from "@/components/Card/SelfEvalButtons"
 import type { SelfEvalRating } from "@/lib/types"
@@ -143,16 +145,44 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <span className="text-sm font-medium text-gray-500 truncate max-w-[60%]">{deckName}</span>
-        <span className="text-sm text-gray-400">
-          {index + 1} / {cards.length}
-        </span>
+      {/* ── Header ─────────────────────────────────────────── */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shadow-sm">
+        <button
+          onClick={() => router.push("/decks")}
+          className="text-gray-400 hover:text-gray-600 active:scale-90 transition-transform p-1 -ml-1"
+          aria-label="Back to decks"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-gray-800 text-base leading-tight truncate">{deckName}</p>
+          <p className="text-xs text-gray-400">{index + 1} / {cards.length}</p>
+        </div>
+
+        <div className="shrink-0">
+          {isAuthed ? (
+            <button
+              onClick={() => signOut({ redirectTo: "/login" })}
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="text-xs font-medium text-yellow-600 hover:text-yellow-700 transition-colors"
+            >
+              Sign in
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Progress bar */}
-      <div className="mx-4 h-1 bg-gray-100 rounded-full overflow-hidden">
+      <div className="mx-4 mt-2 h-1 bg-gray-100 rounded-full overflow-hidden">
         <div
           className="h-full bg-yellow-400 rounded-full transition-all duration-300"
           style={{ width: `${((index + 1) / cards.length) * 100}%` }}
@@ -204,10 +234,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
       </div>
 
       {/* Self-eval buttons — always visible, highlights current rating */}
-      <div className="pb-5 pt-1 space-y-2">
-        {!isAuthed && (
-          <p className="text-center text-xs text-gray-400">Sign in to save progress</p>
-        )}
+      <div className="pb-5 pt-1">
         <SelfEvalButtons onRate={handleRate} disabled={saving} currentRating={currentRating} />
       </div>
 

@@ -1,11 +1,13 @@
+import Image from "next/image"
 import { signIn } from "@/auth"
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-50">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center text-yellow-500 mb-2">
-          JaneDuck 🦆
+        <h1 className="text-2xl font-bold text-center text-yellow-500 mb-2 flex items-center justify-center gap-2">
+          JaneDuck
+          <Image src="/logo-small.png" alt="" width={128} height={12} />
         </h1>
         <p className="text-center text-gray-500 text-sm mb-8">
           Learn English words by writing, not memorizing
