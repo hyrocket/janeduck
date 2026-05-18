@@ -24,6 +24,7 @@ interface CardData {
   word: string
   definition: string
   part_of_speech?: string
+  pronunciation?: string
   difficulty_band?: string
   example_sentences?: { sentence: string; context: string }[]
   starter_templates?: string[]
@@ -84,16 +85,17 @@ async function seed() {
   for (const card of data.cards) {
     await sql.query(
       `INSERT INTO cards (
-        deck_id, word, definition, part_of_speech,
+        deck_id, word, definition, part_of_speech, pronunciation,
         example_sentences, starter_templates, topic_hints,
         collocations, difficulty_band, tags,
         level, order_in_deck, source
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`,
       [
         deckId,
         card.word,
         card.definition,
         card.part_of_speech ?? null,
+        card.pronunciation ?? null,
         card.example_sentences ? JSON.stringify(card.example_sentences) : null,
         card.starter_templates ? JSON.stringify(card.starter_templates) : null,
         card.topic_hints ? JSON.stringify(card.topic_hints) : null,

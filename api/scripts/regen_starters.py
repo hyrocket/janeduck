@@ -9,11 +9,15 @@ Usage (run from api/ directory):
   python scripts/regen_starters.py --dry-run
   python scripts/regen_starters.py --limit 5
   python scripts/regen_starters.py --card-id <UUID>
+  python scripts/regen_starters.py --deck-name "Sec 1 Essentials (test)"
+  python scripts/regen_starters.py --deck-name "Sec 1 Essentials (test)" --words describe,suggest,curious
 
 Options:
-  --dry-run      Print starters without writing to DB
-  --limit N      Process only first N cards (for testing)
-  --card-id UUID Process only one specific card
+  --dry-run           Print starters without writing to DB
+  --limit N           Process only first N cards (for testing)
+  --card-id UUID      Process only one specific card
+  --deck-name NAME    Process only cards in this deck (exact name match)
+  --words w1,w2,...   Process only these specific words (comma-separated, requires --deck-name)
 """
 import argparse
 import asyncio
@@ -39,21 +43,31 @@ secondary school students (Sec 1, age 13-15).
 CORE RULE — the most important constraint:
   The SUBJECT of the sentence MUST be a PERSON: I / She / He / My friend / We / \
 My teacher / They / etc.
-  The TARGET WORD must be something the person EXPERIENCED, SHOWED, or DID — \
-NOT the subject of the sentence.
+  The TARGET WORD must appear in the MAIN CLAUSE of the sentence — already filled in.
+  NEVER put the target word in the blank or omit it from the sentence.
   NEVER start a sentence with the target word itself.
 
 Format rules:
 1. Subject = person (I / She / He / My friend / We / etc.) — ALWAYS.
-2. Target word appears mid-sentence as something experienced or demonstrated.
+2. Target word appears in the MAIN CLAUSE as something the person did, felt, or showed.
 3. Blank ___ is at the SITUATION/CONTEXT position — after: when, after, because, \
 since, so that, until, while, as, if.
 4. The blank must require a PHRASE or CLAUSE — a student cannot fill it with \
 a single word.
-5. Sentences should feel natural and relatable to Singapore teens \
+5. The blank must come at the END of the sentence (after the connector). \
+NEVER split the blank mid-sentence or put words after ___.
+6. Sentences should feel natural and relatable to Singapore teens \
 (school, friends, family, exams, daily life).
-6. Keep language simple enough for a 13-year-old.
-7. Vary the subject and connector across the 3 starters.
+7. Keep language simple enough for a 13-year-old.
+8. Vary the subject and connector across the 3 starters.
+
+SPECIAL RULE for ADVERB target words (carefully, suddenly, etc.):
+  The adverb must appear in the MAIN CLAUSE modifying the verb.
+  Pattern: "[Subject] [verb] [adverb] when/after/because ___."
+  GOOD: "She suddenly stopped when ___."
+  GOOD: "I read the questions carefully because ___."
+  BAD: "Suddenly, my friend ___." (adverb at start, no blank context)
+  BAD: "I felt surprised when ___ suddenly." (adverb after blank)
 
 FORBIDDEN patterns (never generate these):
   "[Word] is important because ___."
@@ -61,13 +75,17 @@ FORBIDDEN patterns (never generate these):
   "[Word] can be difficult after ___."
   "[Word] became a problem because ___."
   Any sentence where the target word itself is the grammatical subject.
+  Any sentence where words appear AFTER the ___ blank.
 
-GOOD examples:
-  noun    -> "My friend showed resilience when ___."
-  noun    -> "She felt vulnerability after ___."
-  noun    -> "I noticed his optimism when ___."
-  adjective -> "She remained resilient even after ___."
-  adjective -> "He felt grateful when ___."
+GOOD examples by part of speech:
+  verb      -> "My friend tried to describe the scene after ___."
+  verb      -> "She suggested a new plan because ___."
+  noun      -> "I showed great effort when ___."
+  noun      -> "She used the opportunity to improve after ___."
+  adjective -> "He felt curious when ___."
+  adjective -> "I was confident because ___."
+  adverb    -> "She suddenly stopped talking when ___."
+  adverb    -> "I carefully checked my work after ___."
 
 Return JSON only: {"starters": ["...", "...", "..."]}  (exactly 3 strings)\
 """
@@ -107,17 +125,30 @@ async def generate_starters(
             continue
 
         # All 3 must contain ___ (the blank marker)
-        if all("___" in s for s in starters):
-            return starters
+        if not all("___" in s for s in starters):
+            continue
+
+        # All 3 must contain the target word (case-insensitive)
+        word_lower = word.lower()
+        if not all(word_lower in s.lower() for s in starters):
+            bad = [s for s in starters if word_lower not in s.lower()]
+            print(f"    [retry] word '{word}' missing from: {bad}")
+            continue
+
+        return starters
 
     raise ValueError(f"could not generate valid starters with ___ after {max_attempts} attempts")
 
 
 async def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dry-run",  action="store_true")
-    parser.add_argument("--limit",    type=int,   default=None)
-    parser.add_argument("--card-id",  type=str,   default=None)
+    parser.add_argument("--dry-run",   action="store_true")
+    parser.add_argument("--limit",     type=int, default=None)
+    parser.add_argument("--card-id",   type=str, default=None)
+    parser.add_argument("--deck-name", type=str, default=None,
+                        help="Exact deck name — only cards in this deck are processed")
+    parser.add_argument("--words",     type=str, default=None,
+                        help="Comma-separated word list (requires --deck-name)")
     args = parser.parse_args()
 
     db_url  = os.environ.get("DATABASE_URL")
@@ -127,15 +158,45 @@ async def main() -> None:
     if not api_key:
         sys.exit("ERROR: OPENAI_API_KEY not set")
 
+    if args.words and not args.deck_name:
+        sys.exit("ERROR: --words requires --deck-name")
+
     model  = os.environ.get("LLM_MODEL_PROMPT", "gpt-4o-mini")
     client = AsyncOpenAI(api_key=api_key)
     conn   = await asyncpg.connect(db_url)
 
     if args.card_id:
         rows = await conn.fetch(
-            "SELECT id, word, definition, part_of_speech FROM cards WHERE id = $1",
+            "SELECT c.id, c.word, c.definition, c.part_of_speech "
+            "FROM cards c WHERE c.id = $1",
             uuid.UUID(args.card_id),
         )
+    elif args.deck_name:
+        # Verify the deck exists before proceeding
+        deck = await conn.fetchrow("SELECT id, name FROM decks WHERE name = $1", args.deck_name)
+        if not deck:
+            sys.exit(f"ERROR: deck '{args.deck_name}' not found in DB")
+        print(f"Target deck: \"{deck['name']}\" (id: {deck['id']})")
+
+        if args.words:
+            word_list = [w.strip().lower() for w in args.words.split(",") if w.strip()]
+            rows = await conn.fetch(
+                "SELECT c.id, c.word, c.definition, c.part_of_speech "
+                "FROM cards c "
+                "JOIN decks d ON c.deck_id = d.id "
+                "WHERE d.name = $1 AND LOWER(c.word) = ANY($2::text[]) "
+                "ORDER BY c.word",
+                args.deck_name, word_list,
+            )
+        else:
+            rows = await conn.fetch(
+                "SELECT c.id, c.word, c.definition, c.part_of_speech "
+                "FROM cards c "
+                "JOIN decks d ON c.deck_id = d.id "
+                "WHERE d.name = $1 "
+                "ORDER BY c.word",
+                args.deck_name,
+            )
     else:
         rows = await conn.fetch(
             "SELECT id, word, definition, part_of_speech FROM cards ORDER BY word",
