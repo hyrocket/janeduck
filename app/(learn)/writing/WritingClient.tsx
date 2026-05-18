@@ -59,7 +59,7 @@ interface Props {
   word: string
   definition: string
   mastery: number
-  userId: string
+  userId: string | null
   sessionId: string | null
 }
 
@@ -322,9 +322,17 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
   const [currentScaffold, setCurrentScaffold] = useState<ScaffoldLevel>("high")
   const [error, setError] = useState<string | null>(null)
   const [card, setCard] = useState<CardData>({ cardId, word, definition, mastery })
+  const [toast, setToast] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const startedRef = useRef(false)
+
+  const isGuest = !userId
+
+  const showToast = (msg: string) => {
+    setToast(msg)
+    setTimeout(() => setToast(null), 2500)
+  }
 
   useEffect(() => {
     if (startedRef.current) return
@@ -479,6 +487,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
       if (data.mastery_level_after != null) {
         setCard(prev => ({ ...prev, mastery: data.mastery_level_after as number }))
       }
+      if (isGuest) showToast("Guest mode — sign in to save your progress")
       setPhase("awaiting_action")
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Something went wrong."
@@ -556,7 +565,9 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${SCAFFOLD_COLOR[currentScaffold]}`}>
             {SCAFFOLD_LABEL[currentScaffold]}
           </span>
-          <MasteryDots level={card.mastery} />
+          {isGuest
+            ? <span className="text-xs text-gray-400">Guest</span>
+            : <MasteryDots level={card.mastery} />}
         </div>
       </div>
 
@@ -694,6 +705,13 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
             </button>
           </div>
           <p className="text-xs text-gray-300 mt-1.5 px-1">Enter to send · Shift+Enter for new line</p>
+        </div>
+      )}
+
+      {/* Guest toast */}
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm px-5 py-2.5 rounded-full shadow-lg z-50 whitespace-nowrap">
+          {toast}
         </div>
       )}
     </div>

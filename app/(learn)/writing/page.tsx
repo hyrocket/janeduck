@@ -1,5 +1,5 @@
 import { auth } from "@/auth"
-import { redirect } from "next/navigation"
+import { redirect } from "next/navigation"  // still used for missing params
 import WritingClient from "./WritingClient"
 
 interface Props {
@@ -15,8 +15,6 @@ interface Props {
 export default async function WritingPage({ searchParams }: Props) {
   const [session, params] = await Promise.all([auth(), searchParams])
 
-  if (!session?.user?.id) redirect("/login")
-
   const { cardId, word, definition, mastery, sessionId } = params
 
   if (!cardId || !word || !definition) {
@@ -29,7 +27,7 @@ export default async function WritingPage({ searchParams }: Props) {
       word={word}
       definition={definition}
       mastery={Number(mastery ?? 0)}
-      userId={session.user.id}
+      userId={session?.user?.id ?? null}
       sessionId={sessionId ?? null}
     />
   )

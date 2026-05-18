@@ -6,7 +6,7 @@ class StartWritingRequest(BaseModel):
     card_id:       str
     word:          str
     definition:    str
-    user_id:       str
+    user_id:       Optional[str] = None
     session_id:    Optional[str] = None
     mastery_level: int = 0
 

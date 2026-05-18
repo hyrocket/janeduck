@@ -67,7 +67,6 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
   }
 
   const goToWriting = (fromIndex: number) => {
-    if (!isAuthed) { router.push("/login"); return }
     const queue = cards.slice(fromIndex).map(c => ({
       cardId: c.id,
       word: c.word,
@@ -98,7 +97,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
   }
 
   const handleRate = async (rating: SelfEvalRating) => {
-    if (!isAuthed) { router.push("/login"); return }
+    if (!isAuthed) { showToast("Guest mode: sign in to save progress"); return }
     if (saving) return
     setSaving(true)
     try {
@@ -117,7 +116,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
   }
 
   const handleStar = async () => {
-    if (!isAuthed) { router.push("/login"); return }
+    if (!isAuthed) { showToast("Guest mode: sign in to save progress"); return }
     // optimistic update
     const willStar = !starredIds.has(card.id)
     setStarredIds(prev => {
