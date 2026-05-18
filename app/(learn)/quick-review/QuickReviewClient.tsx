@@ -28,6 +28,16 @@ interface Props {
   isAuthed: boolean
 }
 
+function MasteryDots({ level }: { level: number }) {
+  return (
+    <div className="flex items-center gap-1">
+      {[0, 1, 2, 3, 4].map(i => (
+        <span key={i} className={`text-base ${i < level ? "opacity-100" : "opacity-20"}`}>🎖️</span>
+      ))}
+    </div>
+  )
+}
+
 export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) {
   const router = useRouter()
   const [index, setIndex] = useState(0)
@@ -243,6 +253,13 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
             </svg>
           </button>
         </div>
+
+        {/* Mastery dots */}
+        {isAuthed && (
+          <div className="mt-4 mb-1">
+            <MasteryDots level={card.user_card?.mastery_level ?? 0} />
+          </div>
+        )}
 
         {/* Write button */}
         <button
