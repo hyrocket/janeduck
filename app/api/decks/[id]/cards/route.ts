@@ -9,10 +9,10 @@ export async function GET(
   const session = await auth()
   const deckId = params.id
 
-  // Base card query
+  // Base card query — include pronunciation
   const cards = await sql`
-    SELECT id, word, definition, part_of_speech, example_sentences,
-           difficulty_band, order_in_deck
+    SELECT id, word, definition, part_of_speech, pronunciation,
+           example_sentences, difficulty_band, order_in_deck
     FROM cards
     WHERE deck_id = ${deckId}
     ORDER BY order_in_deck
@@ -27,7 +27,7 @@ export async function GET(
 
   const userCards = await sql`
     SELECT card_id, mastery_level, last_self_eval_rating, writing_attempts_count,
-           srs_state, ease_factor, interval_days, next_review_at, is_starred
+           last_reviewed_at, is_starred
     FROM user_cards
     WHERE user_id = ${userId}
       AND card_id = ANY(${cardIds}::uuid[])
@@ -41,59 +41,41 @@ export async function GET(
 }
 
 type CardRow = { id: string; [k: string]: unknown }
-type UcRow = { card_id: string; srs_state: string; next_review_at: string; mastery_level: number; is_starred: boolean; [k: string]: unknown }
+type UcRow = {
+  card_id: string
+  mastery_level: number
+  is_starred: boolean
+  last_reviewed_at: string | null
+  writing_attempts_count: number
+  [k: string]: unknown
+}
 
+// Mastery-based priority queue (SRS_SPEC.md §review_priority — simple MVP version).
+// SM-2 fields (srs_state, interval_days) are intentionally NOT used here.
+// Priority: starred > low mastery > not recently reviewed > new cards.
 function buildQueue(cards: CardRow[], ucMap: Map<string, UcRow>) {
-  const now = new Date()
   const MAX = 20
 
-  const due: CardRow[] = []
-  const weak: CardRow[] = []
-  const starred: CardRow[] = []
-  const newCards: CardRow[] = []
-
-  for (const card of cards) {
-    const uc = ucMap.get(card.id)
+  const withPriority = cards.map(card => {
+    const uc = ucMap.get(card.id as string)
     if (!uc) {
-      newCards.push({ ...card, user_card: null })
-      continue
+      // New card — highest priority
+      return { card: { ...card, user_card: null }, priority: 0 }
     }
-    const isDue = new Date(uc.next_review_at) <= now
-    const isStarred = uc.is_starred && isDue
-    const isWeak = uc.mastery_level >= 1 && uc.mastery_level <= 2
+    const mastery = uc.mastery_level ?? 0
+    const lastReviewed = uc.last_reviewed_at ? new Date(uc.last_reviewed_at).getTime() : 0
+    const isStarred = uc.is_starred ? 1 : 0
 
-    if (["learning", "review", "relearning"].includes(uc.srs_state) && isDue) {
-      due.push({ ...card, user_card: uc })
-    } else if (isStarred) {
-      starred.push({ ...card, user_card: uc })
-    } else if (isWeak) {
-      weak.push({ ...card, user_card: uc })
-    }
-  }
+    // Lower score = higher priority in queue
+    // Starred cards get a big boost (-1000)
+    // Lower mastery = higher priority (mastery * 100)
+    // Less recently reviewed = higher priority (older timestamp = smaller value)
+    const score = -isStarred * 1000 + mastery * 100 + (lastReviewed / 1e10)
 
-  const queue: CardRow[] = []
-  const add = (pool: CardRow[], limit: number) => {
-    for (const c of pool) {
-      if (queue.length >= MAX) break
-      if (limit-- <= 0) break
-      queue.push(c)
-    }
-  }
+    return { card: { ...card, user_card: uc }, priority: score }
+  })
 
-  add(due, 10)
-  add(weak, 4)
-  add(starred, 3)
-  // fill remaining with new cards
-  add(newCards, MAX - queue.length)
+  withPriority.sort((a, b) => a.priority - b.priority)
 
-  // if still under MAX, backfill from remaining pools
-  if (queue.length < MAX) {
-    const used = new Set(queue.map(c => c.id))
-    for (const c of [...due, ...weak, ...starred, ...newCards]) {
-      if (queue.length >= MAX) break
-      if (!used.has(c.id as string)) queue.push(c)
-    }
-  }
-
-  return queue
+  return withPriority.slice(0, MAX).map(x => x.card)
 }
