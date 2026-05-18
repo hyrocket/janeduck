@@ -1,0 +1,611 @@
+{
+  "deck": {
+    "name": "Sec 1 Essentials (test)",
+    "description": "Core vocabulary for Sec 1 students. 60 essential verbs, adjectives, adverbs, and nouns for everyday school and personal life.",
+    "level": 1,
+    "source": "janeduck",
+    "is_public": true
+  },
+  "cards": [
+    {
+      "word": "describe",
+      "definition": "To say what someone or something is like.",
+      "part_of_speech": "verb",
+      "pronunciation": "/dɪˈskraɪb/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Can you describe what you saw at the scene?", "context": "school" }],
+      "tags": ["verb", "communication"],
+      "order_in_deck": 1
+    },
+    {
+      "word": "compare",
+      "definition": "To look at how two things are similar or different.",
+      "part_of_speech": "verb",
+      "pronunciation": "/kəmˈpeər/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "The teacher asked us to compare the two characters in the story.", "context": "school" }],
+      "tags": ["verb", "academic"],
+      "order_in_deck": 2
+    },
+    {
+      "word": "explain",
+      "definition": "To make something clear by giving details.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ɪkˈspleɪn/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Please explain why you were late to class.", "context": "school" }],
+      "tags": ["verb", "communication"],
+      "order_in_deck": 3
+    },
+    {
+      "word": "suggest",
+      "definition": "To give an idea for someone to think about.",
+      "part_of_speech": "verb",
+      "pronunciation": "/səˈdʒest/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "My friend suggested that we study together before the exam.", "context": "school" }],
+      "tags": ["verb", "communication"],
+      "order_in_deck": 4
+    },
+    {
+      "word": "improve",
+      "definition": "To make something better, or to get better.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ɪmˈpruːv/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I practised every day to improve my writing skills.", "context": "school" }],
+      "tags": ["verb", "growth"],
+      "order_in_deck": 5
+    },
+    {
+      "word": "decide",
+      "definition": "To choose something after thinking about it.",
+      "part_of_speech": "verb",
+      "pronunciation": "/dɪˈsaɪd/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I couldn't decide which CCA to join.", "context": "school life" }],
+      "tags": ["verb", "decision-making"],
+      "order_in_deck": 6
+    },
+    {
+      "word": "realize",
+      "definition": "To suddenly understand something.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ˈriːəlaɪz/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I only realized my mistake after I handed in the paper.", "context": "school" }],
+      "tags": ["verb", "awareness"],
+      "order_in_deck": 7
+    },
+    {
+      "word": "notice",
+      "definition": "To see or become aware of something.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ˈnoʊtɪs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She noticed that her friend seemed upset during lunch.", "context": "friendships" }],
+      "tags": ["verb", "awareness"],
+      "order_in_deck": 8
+    },
+    {
+      "word": "prepare",
+      "definition": "To get ready for something.",
+      "part_of_speech": "verb",
+      "pronunciation": "/prɪˈpeər/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I stayed up late to prepare for the science test.", "context": "school" }],
+      "tags": ["verb", "planning"],
+      "order_in_deck": 9
+    },
+    {
+      "word": "imagine",
+      "definition": "To form a picture of something in your mind.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ɪˈmædʒɪn/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Try to imagine how the character felt at that moment.", "context": "school" }],
+      "tags": ["verb", "creativity"],
+      "order_in_deck": 10
+    },
+    {
+      "word": "discover",
+      "definition": "To find something for the first time.",
+      "part_of_speech": "verb",
+      "pronunciation": "/dɪˈskʌvər/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "We discovered a shortcut through the park on the way home.", "context": "daily life" }],
+      "tags": ["verb", "exploration"],
+      "order_in_deck": 11
+    },
+    {
+      "word": "encourage",
+      "definition": "To give someone confidence to do something.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ɪnˈkʌrɪdʒ/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "My teacher encouraged me to enter the writing competition.", "context": "school" }],
+      "tags": ["verb", "support"],
+      "order_in_deck": 12
+    },
+    {
+      "word": "avoid",
+      "definition": "To stay away from something.",
+      "part_of_speech": "verb",
+      "pronunciation": "/əˈvɔɪd/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She tried to avoid the topic whenever her parents asked about her grades.", "context": "family" }],
+      "tags": ["verb", "behaviour"],
+      "order_in_deck": 13
+    },
+    {
+      "word": "achieve",
+      "definition": "To succeed in doing something after effort.",
+      "part_of_speech": "verb",
+      "pronunciation": "/əˈtʃiːv/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "He worked hard to achieve his goal of getting into the school team.", "context": "sports" }],
+      "tags": ["verb", "success"],
+      "order_in_deck": 14
+    },
+    {
+      "word": "express",
+      "definition": "To show your thoughts or feelings in words.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ɪkˈspres/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Writing in a journal helped her express how she felt.", "context": "personal" }],
+      "tags": ["verb", "communication"],
+      "order_in_deck": 15
+    },
+    {
+      "word": "complain",
+      "definition": "To say that you are unhappy about something.",
+      "part_of_speech": "verb",
+      "pronunciation": "/kəmˈpleɪn/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "He complained that the homework was too difficult.", "context": "school" }],
+      "tags": ["verb", "communication"],
+      "order_in_deck": 16
+    },
+    {
+      "word": "apologize",
+      "definition": "To say sorry for something you did.",
+      "part_of_speech": "verb",
+      "pronunciation": "/əˈpɒlədʒaɪz/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She apologized to her friend after saying something hurtful.", "context": "friendships" }],
+      "tags": ["verb", "social"],
+      "order_in_deck": 17
+    },
+    {
+      "word": "recommend",
+      "definition": "To tell someone that something is good.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ˌrekəˈmend/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Can you recommend a good book for our English project?", "context": "school" }],
+      "tags": ["verb", "communication"],
+      "order_in_deck": 18
+    },
+    {
+      "word": "manage",
+      "definition": "To succeed in doing something difficult.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ˈmænɪdʒ/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I finally managed to finish all my assignments before dinner.", "context": "school" }],
+      "tags": ["verb", "success"],
+      "order_in_deck": 19
+    },
+    {
+      "word": "influence",
+      "definition": "To have an effect on what someone does or thinks.",
+      "part_of_speech": "verb",
+      "pronunciation": "/ˈɪnfluəns/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Social media can influence the way teenagers think about themselves.", "context": "digital life" }],
+      "tags": ["verb", "social"],
+      "order_in_deck": 20
+    },
+    {
+      "word": "curious",
+      "definition": "Wanting to know or learn about something.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈkjʊəriəs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I was curious about how the experiment would turn out.", "context": "school" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 21
+    },
+    {
+      "word": "confident",
+      "definition": "Feeling sure about yourself and your abilities.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈkɒnfɪdənt/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She felt confident after practising her speech many times.", "context": "school" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 22
+    },
+    {
+      "word": "nervous",
+      "definition": "Feeling worried or afraid about something.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈnɜːvəs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I felt nervous before giving my presentation to the class.", "context": "school" }],
+      "tags": ["adjective", "emotions"],
+      "order_in_deck": 23
+    },
+    {
+      "word": "patient",
+      "definition": "Able to wait calmly without getting annoyed.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈpeɪʃənt/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "You need to be patient when learning a new skill.", "context": "personal development" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 24
+    },
+    {
+      "word": "honest",
+      "definition": "Telling the truth and not cheating.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈɒnɪst/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "It is important to be honest even when the truth is difficult.", "context": "values" }],
+      "tags": ["adjective", "values"],
+      "order_in_deck": 25
+    },
+    {
+      "word": "generous",
+      "definition": "Happy to give time, money, or help to others.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈdʒenərəs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "My classmate was generous enough to share her notes with me.", "context": "school" }],
+      "tags": ["adjective", "values"],
+      "order_in_deck": 26
+    },
+    {
+      "word": "reliable",
+      "definition": "Able to be trusted to do what is expected.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/rɪˈlaɪəbl/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "A reliable friend shows up when you need them most.", "context": "friendships" }],
+      "tags": ["adjective", "values"],
+      "order_in_deck": 27
+    },
+    {
+      "word": "enthusiastic",
+      "definition": "Showing strong excitement about something.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ɪnˌθjuːziˈæstɪk/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She was enthusiastic about joining the debate team.", "context": "school" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 28
+    },
+    {
+      "word": "responsible",
+      "definition": "Having the duty to take care of something.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/rɪˈspɒnsɪbl/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "As the class monitor, he was responsible for taking attendance.", "context": "school" }],
+      "tags": ["adjective", "values"],
+      "order_in_deck": 29
+    },
+    {
+      "word": "independent",
+      "definition": "Able to do things by yourself without help.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˌɪndɪˈpendənt/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Secondary school teaches you to be more independent with your studies.", "context": "school" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 30
+    },
+    {
+      "word": "creative",
+      "definition": "Good at making new ideas or things.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/kriˈeɪtɪv/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Our art teacher is very creative with her lesson ideas.", "context": "school" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 31
+    },
+    {
+      "word": "sensible",
+      "definition": "Able to make good decisions.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈsensɪbl/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "It was sensible of her to bring an umbrella when the sky looked cloudy.", "context": "daily life" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 32
+    },
+    {
+      "word": "ambitious",
+      "definition": "Having a strong wish to succeed.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/æmˈbɪʃəs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "He is ambitious and already knows which university he wants to attend.", "context": "future plans" }],
+      "tags": ["adjective", "personality"],
+      "order_in_deck": 33
+    },
+    {
+      "word": "anxious",
+      "definition": "Feeling worried about something that may happen.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈæŋkʃəs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I felt anxious waiting for my exam results.", "context": "school" }],
+      "tags": ["adjective", "emotions"],
+      "order_in_deck": 34
+    },
+    {
+      "word": "grateful",
+      "definition": "Feeling thankful for something.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈɡreɪtfəl/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I was grateful when my teacher gave me extra time to finish the test.", "context": "school" }],
+      "tags": ["adjective", "values"],
+      "order_in_deck": 35
+    },
+    {
+      "word": "familiar",
+      "definition": "Well known to you because you have seen it before.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/fəˈmɪliər/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "The tune sounded familiar, but I couldn't remember the name of the song.", "context": "daily life" }],
+      "tags": ["adjective", "perception"],
+      "order_in_deck": 36
+    },
+    {
+      "word": "obvious",
+      "definition": "Easy to see or understand.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ˈɒbviəs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "It was obvious from her smile that she was happy with the result.", "context": "daily life" }],
+      "tags": ["adjective", "perception"],
+      "order_in_deck": 37
+    },
+    {
+      "word": "sincere",
+      "definition": "Honest and saying what you really feel.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/sɪnˈsɪər/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "His apology seemed sincere, so she decided to forgive him.", "context": "friendships" }],
+      "tags": ["adjective", "values"],
+      "order_in_deck": 38
+    },
+    {
+      "word": "impressive",
+      "definition": "So good that people admire it.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ɪmˈpresɪv/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Her science project was impressive and won first place.", "context": "school" }],
+      "tags": ["adjective", "evaluation"],
+      "order_in_deck": 39
+    },
+    {
+      "word": "essential",
+      "definition": "Very important and necessary.",
+      "part_of_speech": "adjective",
+      "pronunciation": "/ɪˈsenʃəl/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Good sleep is essential for doing well in school.", "context": "health" }],
+      "tags": ["adjective", "evaluation"],
+      "order_in_deck": 40
+    },
+    {
+      "word": "carefully",
+      "definition": "In a way that gives attention to detail.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈkeəfəli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Read the question carefully before you answer.", "context": "school" }],
+      "tags": ["adverb", "manner"],
+      "order_in_deck": 41
+    },
+    {
+      "word": "suddenly",
+      "definition": "Quickly and without warning.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈsʌdənli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "It suddenly started to rain while we were walking home.", "context": "daily life" }],
+      "tags": ["adverb", "time"],
+      "order_in_deck": 42
+    },
+    {
+      "word": "frequently",
+      "definition": "Happening often.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈfriːkwəntli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She frequently forgets to bring her water bottle to school.", "context": "school" }],
+      "tags": ["adverb", "frequency"],
+      "order_in_deck": 43
+    },
+    {
+      "word": "gradually",
+      "definition": "Slowly, over a period of time.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈɡrædʒuəli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "My confidence in speaking English gradually improved over the term.", "context": "school" }],
+      "tags": ["adverb", "time"],
+      "order_in_deck": 44
+    },
+    {
+      "word": "clearly",
+      "definition": "In a way that is easy to see or understand.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈklɪərli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Please speak clearly so everyone in the room can hear you.", "context": "school" }],
+      "tags": ["adverb", "manner"],
+      "order_in_deck": 45
+    },
+    {
+      "word": "eventually",
+      "definition": "In the end, after a long time.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ɪˈventʃuəli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "I kept trying and eventually got the answer right.", "context": "school" }],
+      "tags": ["adverb", "time"],
+      "order_in_deck": 46
+    },
+    {
+      "word": "rarely",
+      "definition": "Almost never.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈreərli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "He rarely misses school, even when he feels unwell.", "context": "school" }],
+      "tags": ["adverb", "frequency"],
+      "order_in_deck": 47
+    },
+    {
+      "word": "obviously",
+      "definition": "In a way that is easy to see.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈɒbviəsli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She was obviously tired after the long training session.", "context": "sports" }],
+      "tags": ["adverb", "manner"],
+      "order_in_deck": 48
+    },
+    {
+      "word": "immediately",
+      "definition": "Right away, without delay.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ɪˈmiːdiətli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She immediately put up her hand when she knew the answer.", "context": "school" }],
+      "tags": ["adverb", "time"],
+      "order_in_deck": 49
+    },
+    {
+      "word": "confidently",
+      "definition": "In a way that shows you are sure of yourself.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈkɒnfɪdəntli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "He walked up to the stage and spoke confidently.", "context": "school" }],
+      "tags": ["adverb", "manner"],
+      "order_in_deck": 50
+    },
+    {
+      "word": "honestly",
+      "definition": "In a truthful way.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈɒnɪstli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She honestly told her friend that the outfit didn't suit her.", "context": "friendships" }],
+      "tags": ["adverb", "manner"],
+      "order_in_deck": 51
+    },
+    {
+      "word": "seriously",
+      "definition": "In a way that is not joking.",
+      "part_of_speech": "adverb",
+      "pronunciation": "/ˈsɪəriəsli/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "You should take your health seriously and not skip meals.", "context": "health" }],
+      "tags": ["adverb", "manner"],
+      "order_in_deck": 52
+    },
+    {
+      "word": "effort",
+      "definition": "The energy you use to do something.",
+      "part_of_speech": "noun",
+      "pronunciation": "/ˈefərt/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "With a lot of effort, she managed to pass the difficult exam.", "context": "school" }],
+      "tags": ["noun", "success"],
+      "order_in_deck": 53
+    },
+    {
+      "word": "opportunity",
+      "definition": "A chance to do something good.",
+      "part_of_speech": "noun",
+      "pronunciation": "/ˌɒpəˈtjuːnɪti/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Joining the student council was a great opportunity to develop leadership skills.", "context": "school" }],
+      "tags": ["noun", "growth"],
+      "order_in_deck": 54
+    },
+    {
+      "word": "challenge",
+      "definition": "Something difficult that tests your ability.",
+      "part_of_speech": "noun",
+      "pronunciation": "/ˈtʃælɪndʒ/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Moving to a new school was a big challenge at first.", "context": "school" }],
+      "tags": ["noun", "difficulty"],
+      "order_in_deck": 55
+    },
+    {
+      "word": "progress",
+      "definition": "The process of getting better or moving forward.",
+      "part_of_speech": "noun",
+      "pronunciation": "/ˈprəʊɡres/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "My teacher said I had made good progress in my writing this term.", "context": "school" }],
+      "tags": ["noun", "growth"],
+      "order_in_deck": 56
+    },
+    {
+      "word": "advice",
+      "definition": "An idea about what someone should do.",
+      "part_of_speech": "noun",
+      "pronunciation": "/ədˈvaɪs/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "She gave me useful advice on how to manage my time better.", "context": "school" }],
+      "tags": ["noun", "communication"],
+      "order_in_deck": 57
+    },
+    {
+      "word": "achievement",
+      "definition": "Something good you succeed in doing.",
+      "part_of_speech": "noun",
+      "pronunciation": "/əˈtʃiːvmənt/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Winning the spelling bee was her greatest achievement that year.", "context": "school" }],
+      "tags": ["noun", "success"],
+      "order_in_deck": 58
+    },
+    {
+      "word": "decision",
+      "definition": "A choice you make after thinking.",
+      "part_of_speech": "noun",
+      "pronunciation": "/dɪˈsɪʒən/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Choosing which subject to take was a difficult decision.", "context": "school" }],
+      "tags": ["noun", "decision-making"],
+      "order_in_deck": 59
+    },
+    {
+      "word": "mistake",
+      "definition": "Something done wrong by accident.",
+      "part_of_speech": "noun",
+      "pronunciation": "/mɪˈsteɪk/",
+      "difficulty_band": "common",
+      "example_sentences": [{ "sentence": "Making a mistake is okay as long as you learn from it.", "context": "personal development" }],
+      "tags": ["noun", "learning"],
+      "order_in_deck": 60
+    }
+  ]
+}
