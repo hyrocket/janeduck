@@ -52,17 +52,26 @@ export default async function StarredPage() {
 
   return (
     <main className="min-h-screen bg-yellow-50">
-      <div className="max-w-lg mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <Link href="/decks" className="text-gray-400 hover:text-gray-600 transition-colors">
-            ←
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">
+        <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
+          <Link
+            href="/decks"
+            className="text-gray-400 hover:text-gray-600 active:scale-90 transition-transform p-1 -ml-1"
+            aria-label="Back to decks"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
           </Link>
-          <div>
-            <h1 className="text-lg font-bold text-gray-800">Starred Words</h1>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-gray-800 text-base leading-tight">Starred</p>
             <p className="text-xs text-gray-400">{rows.length} word{rows.length !== 1 ? "s" : ""}</p>
           </div>
         </div>
+      </div>
+
+      <div className="max-w-lg mx-auto px-4 py-6">
 
         {rows.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
