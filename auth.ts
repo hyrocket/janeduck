@@ -19,10 +19,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    jwt({ token }) {
-      // Persist the UUID in the JWT so it's stable across sessions
-      if (token.sub && !token.userId) {
-        token.userId = googleSubToUUID(token.sub)
+    jwt({ token, account, profile }) {
+      // On first sign-in (account present), pin userId to Google's stable sub → UUID v5.
+      // On subsequent requests account/profile are absent; token.userId persists from cookie.
+      if (account?.provider === "google" && (profile as { sub?: string })?.sub) {
+        token.userId = googleSubToUUID((profile as { sub: string }).sub)
       }
       return token
     },
