@@ -186,8 +186,8 @@ function UserBubble({ text }: { text: string }) {
 }
 
 const NEXT_MODE_LABEL: Record<ScaffoldLevel, string | null> = {
-  high:   "Next Challenge →",
-  medium: "Next Challenge →",
+  high:   "Next Challenge",
+  medium: "Next Challenge",
   low:    null,
 }
 
@@ -288,16 +288,22 @@ function ActionButton({ action, onAction, label }: { action: UserAction; onActio
   }
   const defaultLabels: Record<UserAction, string> = {
     try_again:        "↩ Try Again",
-    master_challenge: "Next Challenge →",
-    next_word:        "Next Word →",
+    master_challenge: "Next Challenge",
+    next_word:        "Next Word",
   }
 
+  const isForward = action === "master_challenge" || action === "next_word"
+  const chevronRight = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="inline ml-1">
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  )
   return (
     <button
       onClick={() => onAction(action)}
       className={`text-sm font-medium px-4 py-2 rounded-xl transition-all duration-100 ${styles[action]}`}
     >
-      {label ?? defaultLabels[action]}
+      {label ?? defaultLabels[action]}{isForward && chevronRight}
     </button>
   )
 }

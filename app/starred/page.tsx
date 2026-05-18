@@ -86,8 +86,11 @@ export default async function StarredPage() {
             <p className="text-4xl mb-4">☆</p>
             <p className="text-sm">No starred words yet.</p>
             <p className="text-xs mt-1">Tap ★ on any card to save it here.</p>
-            <Link href="/decks" className="inline-block mt-6 text-sm text-yellow-500 hover:underline">
-              Go to decks →
+            <Link href="/decks" className="inline-flex items-center gap-1 mt-6 text-sm text-yellow-500 hover:underline">
+              Go to decks
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
             </Link>
           </div>
         ) : (

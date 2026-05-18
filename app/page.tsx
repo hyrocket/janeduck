@@ -56,7 +56,8 @@ export default async function LandingPage() {
             href="/decks"
             className="block w-full bg-white hover:bg-gray-50 text-gray-600 font-medium text-sm py-3 rounded-2xl text-center transition-colors border border-gray-200"
           >
-            Try without signing in →
+            Try without signing in
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="inline ml-1"><path d="M9 18l6-6-6-6" /></svg>
           </Link>
         </div>
       </div>
