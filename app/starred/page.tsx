@@ -70,8 +70,10 @@ export default async function StarredPage() {
 
         {/* Section header */}
         <div className="flex items-center gap-3 mb-6">
-          <Link href="/decks" className="text-gray-400 hover:text-gray-600 transition-colors">
-            ←
+          <Link href="/decks" className="text-gray-400 hover:text-gray-600 active:scale-90 transition-transform p-1 -ml-1">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
           </Link>
           <div>
             <h2 className="text-lg font-bold text-gray-800">Starred Words</h2>

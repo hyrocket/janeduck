@@ -673,7 +673,8 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
               onClick={handleBack}
               className="mt-2 text-sm font-medium text-yellow-600 bg-yellow-50 px-5 py-2.5 rounded-xl hover:bg-yellow-100 active:scale-95 transition-all"
             >
-              ← Back to cards
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1"><path d="M15 18l-6-6 6-6" /></svg>
+              Back to cards
             </button>
           </div>
         )}
