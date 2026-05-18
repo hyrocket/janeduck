@@ -1,8 +1,13 @@
 import os
+import sys
 import uuid
 import traceback
 from pathlib import Path
 from dotenv import load_dotenv
+
+# On Vercel, __file__ is /var/task/api/index.py but sys.path only has /var/task.
+# Add the api/ directory so that `workflows` and `models` packages are importable.
+sys.path.insert(0, str(Path(__file__).parent))
 
 # Load env files: .env.local overrides .env (mirrors Next.js precedence).
 _root = Path(__file__).parent.parent
