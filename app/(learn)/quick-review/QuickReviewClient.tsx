@@ -190,9 +190,28 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
       </div>
 
       {/* Card area */}
-      <div className="flex-1 flex items-center justify-center px-4 py-3 min-h-0">
-        <div className="w-full">
-          <div key={card.id} className={animClass}>
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-3 min-h-0">
+        {/* Card + side arrows */}
+        <div className="w-full relative">
+          {/* Left arrow */}
+          <button
+            onClick={goPrev}
+            disabled={index === 0}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10
+                       w-10 h-10 flex items-center justify-center
+                       bg-white hover:bg-yellow-50 rounded-full shadow-md
+                       text-gray-400 hover:text-yellow-500
+                       disabled:opacity-20 disabled:cursor-not-allowed
+                       transition-all duration-150 hover:scale-110 active:scale-95"
+            aria-label="Previous card"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          {/* Card */}
+          <div key={card.id} className={`${animClass} px-12`}>
             <FlashCard
               word={card.word}
               definition={card.definition}
@@ -207,30 +226,35 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
             />
           </div>
 
-          {/* Navigation row */}
-          <div className="flex justify-between items-center mt-3 px-1">
-            <button
-              onClick={goPrev}
-              disabled={index === 0}
-              className="flex items-center gap-1 text-sm text-gray-400 disabled:opacity-20 active:text-gray-600 px-2 py-1"
-            >
-              ← prev
-            </button>
-            <button
-              onClick={() => goToWriting(index)}
-              className="text-xs text-yellow-500 font-medium active:text-yellow-700"
-            >
-              ✏️ Write
-            </button>
-            <button
-              onClick={goNext}
-              disabled={index === cards.length - 1}
-              className="flex items-center gap-1 text-sm text-gray-400 disabled:opacity-20 active:text-gray-600 px-2 py-1"
-            >
-              next →
-            </button>
-          </div>
+          {/* Right arrow */}
+          <button
+            onClick={goNext}
+            disabled={index === cards.length - 1}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10
+                       w-10 h-10 flex items-center justify-center
+                       bg-white hover:bg-yellow-50 rounded-full shadow-md
+                       text-gray-400 hover:text-yellow-500
+                       disabled:opacity-20 disabled:cursor-not-allowed
+                       transition-all duration-150 hover:scale-110 active:scale-95"
+            aria-label="Next card"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
         </div>
+
+        {/* Write button */}
+        <button
+          onClick={() => goToWriting(index)}
+          className="mt-5 flex items-center gap-2 px-6 py-2.5
+                     bg-yellow-400 hover:bg-yellow-500
+                     text-yellow-900 text-sm font-semibold
+                     rounded-full shadow-sm animate-pulse-glow
+                     transition-all duration-150 hover:scale-105 hover:shadow-md active:scale-95"
+        >
+          ✏️ Write it!
+        </button>
       </div>
 
       {/* Self-eval buttons — always visible, highlights current rating */}

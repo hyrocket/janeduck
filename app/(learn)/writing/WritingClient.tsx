@@ -77,6 +77,12 @@ const SCAFFOLD_COLOR: Record<ScaffoldLevel, string> = {
   low:    "bg-purple-100 text-purple-700",
 }
 
+const SCAFFOLD_ROCKETS: Record<ScaffoldLevel, string> = {
+  high:   "🚀",
+  medium: "🚀🚀",
+  low:    "🚀🚀🚀",
+}
+
 const RATING_STYLE: Record<WritingRating, { bg: string; label: string }> = {
   again: { bg: "bg-red-100 text-red-600",       label: "Keep practicing" },
   hard:  { bg: "bg-orange-100 text-orange-600",  label: "Getting there" },
@@ -120,19 +126,17 @@ function MasteryDots({ level }: { level: number }) {
 function PromptBubble({ ctx, word }: { ctx: PromptCtx; word: string }) {
   return (
     <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%] space-y-2">
-      {ctx.is_master_challenge && (
-        <div className="flex items-center gap-1.5 text-purple-600 text-xs font-semibold">
-          <span>🚀</span> {SCAFFOLD_LABEL[ctx.scaffold]}
-        </div>
-      )}
+      <div className="flex items-center gap-1.5 text-purple-600 text-xs font-semibold">
+        <span>{SCAFFOLD_ROCKETS[ctx.scaffold]}</span> {SCAFFOLD_LABEL[ctx.scaffold]}
+      </div>
 
       {ctx.scaffold === "high" && ctx.starter_used && (
         <>
-          <p className="text-xs text-gray-400 font-medium">Complete this sentence:</p>
+          <p className="text-xs text-gray-400 font-medium">Let&apos;s finish this sentence:</p>
           <p className="text-sm text-gray-800 font-medium leading-relaxed bg-yellow-50 rounded-lg px-3 py-2 border border-yellow-100">
             {ctx.starter_used}
           </p>
-          <p className="text-xs text-gray-400">Fill in the blank with a phrase or clause.</p>
+          <p className="text-xs text-gray-400">Add a phrase to the blank — make it yours.</p>
         </>
       )}
 
@@ -542,12 +546,18 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
 
   const isLastMsg = (i: number) => i === messages.length - 1
 
+  const [isExiting, setIsExiting] = useState(false)
+  const handleBack = () => {
+    setIsExiting(true)
+    setTimeout(() => router.back(), 500)
+  }
+
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className={`flex flex-col h-full ${isExiting ? "animate-slide-down-exit" : "animate-slide-up-enter"}`}>
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shadow-sm">
         <button
-          onClick={() => router.back()}
+          onClick={handleBack}
           className="text-gray-400 hover:text-gray-600 active:scale-90 transition-transform p-1 -ml-1"
           aria-label="Back"
         >
@@ -660,7 +670,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
               </div>
             </div>
             <button
-              onClick={() => router.back()}
+              onClick={handleBack}
               className="mt-2 text-sm font-medium text-yellow-600 bg-yellow-50 px-5 py-2.5 rounded-xl hover:bg-yellow-100 active:scale-95 transition-all"
             >
               ← Back to cards

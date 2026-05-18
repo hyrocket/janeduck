@@ -22,13 +22,17 @@ export default async function WritingPage({ searchParams }: Props) {
   }
 
   return (
-    <WritingClient
-      cardId={cardId}
-      word={word}
-      definition={definition}
-      mastery={Number(mastery ?? 0)}
-      userId={session?.user?.id ?? null}
-      sessionId={sessionId ?? null}
-    />
+    <main className="bg-yellow-50 min-h-screen">
+      <div className="max-w-lg mx-auto h-screen flex flex-col">
+        <WritingClient
+          cardId={cardId}
+          word={word}
+          definition={definition}
+          mastery={Number(mastery ?? 0)}
+          userId={session?.user?.id ?? null}
+          sessionId={sessionId ?? null}
+        />
+      </div>
+    </main>
   )
 }

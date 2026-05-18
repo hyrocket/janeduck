@@ -136,10 +136,10 @@ export default async function DecksPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-300">{progress.studied} / {total} studied</p>
+                    <p className="text-xs text-gray-500">{progress.studied} / {total} studied</p>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-300 mt-2">{total} words</p>
+                  <p className="text-xs text-gray-500 mt-2">{total} words</p>
                 )}
               </div>
             </Link>
