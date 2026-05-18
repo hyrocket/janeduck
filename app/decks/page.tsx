@@ -58,7 +58,7 @@ export default async function DecksPage() {
           <div>
             <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
               JaneDuck
-              <Image src="/logo-small.png" alt="" width={128} height={12} className="inline" />
+              <Image src="/logo-small.png" alt="" width={12} height={12} />
             </h1>
             {session?.user?.name && (
               <p className="text-xs text-gray-400 mt-0.5">Hi, {session.user.name.split(" ")[0]}</p>
