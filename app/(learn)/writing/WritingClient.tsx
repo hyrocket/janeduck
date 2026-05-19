@@ -558,6 +558,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
   const [isExiting, setIsExiting] = useState(false)
   const handleBack = () => {
     setIsExiting(true)
+    sessionStorage.setItem("writing_completed", "true")
     setTimeout(() => router.back(), 500)
   }
 

@@ -3,6 +3,8 @@ import { auth } from "@/auth"
 import { notFound } from "next/navigation"
 import { calculateReviewPriority } from "@/lib/srs/update"
 import type { SelfEvalRating } from "@/lib/types"
+
+export const dynamic = "force-dynamic"
 import QuickReviewClient from "./QuickReviewClient"
 
 interface Props {

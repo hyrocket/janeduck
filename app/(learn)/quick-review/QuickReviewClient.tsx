@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { signOut } from "next-auth/react"
@@ -42,6 +42,15 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
   const router = useRouter()
   const [index, setIndex] = useState(0)
   const [saving, setSaving] = useState(false)
+
+  // Writing 완료 후 돌아올 때 stale 캐시 제거 → 서버에서 최신 mastery 재로드
+  useEffect(() => {
+    if (sessionStorage.getItem("writing_completed")) {
+      sessionStorage.removeItem("writing_completed")
+      router.refresh()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [animDir, setAnimDir] = useState<"left" | "right" | null>(null)
   const [toast, setToast] = useState<string | null>(null)
 
