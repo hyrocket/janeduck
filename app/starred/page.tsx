@@ -77,10 +77,18 @@ export default async function StarredPage() {
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </Link>
-          <div>
+          <div className="flex-1">
             <h2 className="text-lg font-bold text-gray-800">Starred Words</h2>
             <p className="text-xs text-gray-400">{rows.length} word{rows.length !== 1 ? "s" : ""}</p>
           </div>
+          {rows.length > 0 && (
+            <Link
+              href="/starred/review"
+              className="flex items-center gap-1.5 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 text-sm font-semibold rounded-full shadow-sm transition-all active:scale-95"
+            >
+              ✏️ Review All
+            </Link>
+          )}
         </div>
 
         {rows.length === 0 ? (
@@ -100,7 +108,7 @@ export default async function StarredPage() {
             {rows.map(card => (
               <Link
                 key={card.card_id}
-                href={`/quick-review?deckId=${card.deck_id}`}
+                href={`/starred/review?startCardId=${card.card_id}`}
                 className="flex items-center gap-4 bg-white rounded-2xl px-4 py-3.5 shadow-sm hover:shadow-md active:shadow-sm transition-shadow"
               >
                 {/* Word info */}

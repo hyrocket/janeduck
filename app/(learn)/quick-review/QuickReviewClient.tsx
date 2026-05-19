@@ -26,6 +26,7 @@ interface Props {
   cards: CardData[]
   deckName: string
   isAuthed: boolean
+  backHref?: string
 }
 
 function MasteryDots({ level }: { level: number }) {
@@ -38,7 +39,7 @@ function MasteryDots({ level }: { level: number }) {
   )
 }
 
-export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) {
+export default function QuickReviewClient({ cards, deckName, isAuthed, backHref = "/decks" }: Props) {
   const router = useRouter()
   const [index, setIndex] = useState(0)
   const [saving, setSaving] = useState(false)
@@ -167,7 +168,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed }: Props) 
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shadow-sm">
         <button
-          onClick={() => router.push("/decks")}
+          onClick={() => router.push(backHref)}
           className="text-gray-400 hover:text-gray-600 active:scale-90 transition-transform p-1 -ml-1"
           aria-label="Back to decks"
         >
