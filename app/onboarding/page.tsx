@@ -1,26 +1,42 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { Suspense, useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 
 export default function OnboardingPage() {
-  const router = useRouter()
+  return (
+    <Suspense>
+      <OnboardingInner />
+    </Suspense>
+  )
+}
+
+function OnboardingInner() {
+  const router       = useRouter()
+  const searchParams = useSearchParams()
   const [step, setStep]     = useState<1 | 2 | 3>(1)
   const [name, setName]     = useState("")
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
+
     if (params.get("reset") === "1") {
       localStorage.removeItem("jd_onboarding_done")
       localStorage.removeItem("jd_display_name")
+      setStep(1)
       return
     }
+
     if (localStorage.getItem("jd_onboarding_done") === "true") {
+      if (params.get("step") === "2") { setStep(2); return }
       router.replace("/decks")
+      return
     }
-  }, [router])
+
+    if (params.get("step") === "2") setStep(2)
+  }, [router, searchParams])
 
   async function handleNameSubmit() {
     if (saving) return
@@ -35,7 +51,7 @@ export default function OnboardingPage() {
         body: JSON.stringify({ displayName: trimmed }),
       })
     } catch {
-      // fallback to localStorage only
+      // localStorage fallback
     }
 
     localStorage.setItem("jd_onboarding_done", "true")

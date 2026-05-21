@@ -9,10 +9,12 @@ export default async function LandingPage() {
 
   if (session?.user?.id) {
     const rows = await sql`
-      SELECT onboarding_done FROM user_profiles WHERE user_id = ${session.user.id} LIMIT 1
+      SELECT onboarding_done, display_name FROM user_profiles WHERE user_id = ${session.user.id} LIMIT 1
     `
-    const done = rows[0]?.onboarding_done === true
-    redirect(done ? "/decks" : "/onboarding")
+    const profile = rows[0] ?? null
+    if (profile?.display_name) redirect("/decks")
+    if (profile?.onboarding_done) redirect("/onboarding?step=2")
+    redirect("/onboarding")
   }
 
   return (
