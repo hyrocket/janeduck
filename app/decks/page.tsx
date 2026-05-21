@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import Link from "next/link"
 import Image from "next/image"
 import { signOut } from "@/auth"
+import { GuestOnboardingGuard } from "./GuestOnboardingGuard"
 
 export const dynamic = "force-dynamic"
 
@@ -54,6 +55,8 @@ export default async function DecksPage() {
 
   return (
     <main className="min-h-screen bg-yellow-50">
+      {/* 게스트 온보딩 가드 — 로그인 사용자는 서버에서 이미 처리됨 */}
+      {!session && <GuestOnboardingGuard />}
       <div className="max-w-lg mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

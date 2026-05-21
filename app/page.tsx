@@ -1,13 +1,19 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
+import { sql } from "@/lib/db"
 import Link from "next/link"
 import Image from "next/image"
 
 export default async function LandingPage() {
   const session = await auth()
 
-  // Logged-in users skip landing and go straight to decks
-  if (session) redirect("/decks")
+  if (session?.user?.id) {
+    const rows = await sql`
+      SELECT onboarding_done FROM user_profiles WHERE user_id = ${session.user.id} LIMIT 1
+    `
+    const done = rows[0]?.onboarding_done === true
+    redirect(done ? "/decks" : "/onboarding")
+  }
 
   return (
     <main className="min-h-screen bg-yellow-50 flex flex-col">
