@@ -104,7 +104,7 @@ export default async function DecksPage() {
             return (
             <Link
               key={deck.id as string}
-              href={`/quick-review?deckId=${deck.id}`}
+              href={`/deck/${deck.id}`}
               className="flex items-center gap-4 bg-white rounded-2xl shadow-sm px-4 py-4 hover:shadow-md active:shadow-sm transition-shadow"
             >
               <DeckCover level={deck.level as number} />

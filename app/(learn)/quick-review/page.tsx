@@ -8,11 +8,12 @@ export const dynamic = "force-dynamic"
 import QuickReviewClient from "./QuickReviewClient"
 
 interface Props {
-  searchParams: { deckId?: string }
+  searchParams: { deckId?: string; startCardId?: string }
 }
 
 export default async function QuickReviewPage({ searchParams }: Props) {
   const deckId = searchParams.deckId
+  const startCardId = searchParams.startCardId ?? null
   if (!deckId) notFound()
 
   const session = await auth()
@@ -46,6 +47,18 @@ export default async function QuickReviewPage({ searchParams }: Props) {
   }
 
   const queue = buildQueue(cards as CardRow[], ucMap)
+
+  // startCardId가 있으면 해당 카드를 큐 맨 앞으로
+  if (startCardId) {
+    const idx = queue.findIndex(c => c.id === startCardId)
+    if (idx > 0) {
+      const [card] = queue.splice(idx, 1)
+      queue.unshift(card)
+    } else if (idx === -1) {
+      const raw = (cards as CardRow[]).find(c => c.id === startCardId)
+      if (raw) queue.unshift({ ...raw, user_card: ucMap.get(raw.id) ?? null })
+    }
+  }
 
   return (
     <main className="bg-yellow-50 min-h-screen">

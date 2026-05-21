@@ -31,6 +31,8 @@ body {
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   /* cubic-bezier(0.22,1,0.36,1) = ease-out-expo: fast start, silky finish */
   .animate-slide-from-right { animation: slideFromRight 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
   .animate-slide-from-left  { animation: slideFromLeft  0.55s cubic-bezier(0.22, 1, 0.36, 1); }
