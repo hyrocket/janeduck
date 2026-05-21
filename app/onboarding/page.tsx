@@ -92,17 +92,16 @@ function Step1({ onNext }: { onNext: () => void }) {
   return (
     <div className="text-center space-y-6">
       <div className="space-y-3">
-        <h1 className="text-2xl font-bold text-gray-800">Hey, I'm JaneDuck! 🦆</h1>
+        <h1 className="text-2xl font-bold text-gray-800">{"Hey, I'm JaneDuck! 🦆"}</h1>
         <p className="text-gray-500 text-base leading-relaxed">
-          I'm here to help you actually <em>use</em> the words you're learning —
-          not just memorise them. We'll do it one sentence at a time.
+          {"I'm here to help you actually "}<em>use</em>{" the words you're learning — not just memorise them. We'll do it one sentence at a time."}
         </p>
       </div>
       <button
         onClick={onNext}
         className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold text-base rounded-2xl shadow-sm transition-all active:scale-95"
       >
-        Let's go →
+        {"Let's go →"}
       </button>
     </div>
   )
@@ -122,7 +121,7 @@ function Step2({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-gray-800">What should I call you?</h2>
+        <h2 className="text-2xl font-bold text-gray-800">{"What should I call you?"}</h2>
         <p className="text-gray-400 text-sm">Just your first name is fine.</p>
       </div>
 
@@ -169,7 +168,7 @@ function Step3({ name, onStart }: { name: string; onStart: () => void }) {
     <div className="space-y-7">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-gray-800">{greeting} 🦆</h2>
-        <p className="text-gray-400 text-sm">Here's how JaneDuck works.</p>
+        <p className="text-gray-400 text-sm">{"Here's how JaneDuck works."}</p>
       </div>
 
       <div className="space-y-3">
