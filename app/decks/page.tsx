@@ -33,7 +33,12 @@ export default async function DecksPage() {
       FROM decks
       WHERE owner_id = ${userId} AND deck_type = 'user'
       ORDER BY level, name
-    ` : [],
+    ` : sql`
+      SELECT id, name, description, level, card_count
+      FROM decks
+      WHERE deck_type = 'library' AND is_default = true
+      ORDER BY level, name
+    `,
     userId ? sql`
       SELECT cards.deck_id,
              COUNT(*)::int AS studied,
@@ -108,19 +113,13 @@ export default async function DecksPage() {
           )}
         </div>
 
-        {/* Guest state */}
+        {/* Guest banner */}
         {!userId && (
-          <div className="text-center py-16 space-y-4">
-            <p className="text-4xl">🦆</p>
-            <p className="text-gray-500 text-sm">Sign in to see your decks.</p>
-            <div className="space-y-2">
-              <Link href="/login" className="block w-full max-w-xs mx-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold text-sm rounded-2xl text-center transition-colors">
-                Sign in with Google
-              </Link>
-              <Link href="/library" className="block text-xs text-gray-400 hover:text-yellow-500 transition-colors">
-                Browse Library →
-              </Link>
-            </div>
+          <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 mb-4 shadow-sm">
+            <p className="text-xs text-gray-500">Sign in to save your progress</p>
+            <Link href="/login" className="text-xs font-bold text-yellow-600 hover:text-yellow-700 transition-colors">
+              Sign in →
+            </Link>
           </div>
         )}
 
@@ -136,7 +135,7 @@ export default async function DecksPage() {
         )}
 
         {/* Deck list */}
-        {userId && decks.length > 0 && (
+        {decks.length > 0 && (
           <div className="space-y-3">
             {decks.map(deck => {
               const total    = deck.card_count as number
@@ -183,7 +182,7 @@ export default async function DecksPage() {
                       )}
                     </div>
                   </Link>
-                  <DeleteDeckButton deckId={deck.id as string} deckName={deck.name as string} />
+                  {userId && <DeleteDeckButton deckId={deck.id as string} deckName={deck.name as string} />}
                 </div>
               )
             })}

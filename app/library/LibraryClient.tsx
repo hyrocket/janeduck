@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 interface LibraryDeck {
@@ -24,6 +24,13 @@ export function LibraryClient({
   const [modalName, setModalName] = useState("")
   const [modalError, setModalError] = useState("")
   const [modalLoading, setModalLoading] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!toast) return
+    const t = setTimeout(() => setToast(null), 3000)
+    return () => clearTimeout(t)
+  }, [toast])
 
   async function handleAdd(deckId: string, name: string) {
     if (!isLoggedIn) {
@@ -45,7 +52,7 @@ export function LibraryClient({
         return
       }
       if (!res.ok) throw new Error("Server error")
-      router.push("/decks")
+      setToast(name)
     } catch {
       alert("Something went wrong. Please try again.")
     } finally {
@@ -72,7 +79,7 @@ export function LibraryClient({
       }
       if (!res.ok) throw new Error("Server error")
       setModal(null)
-      router.push("/decks")
+      setToast(name)
     } catch {
       setModalError("Something went wrong. Please try again.")
       setModalLoading(false)
@@ -135,6 +142,19 @@ export function LibraryClient({
           )
         })}
       </div>
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-2xl shadow-xl animate-fade-in whitespace-nowrap">
+          <span>✓ <strong>{toast}</strong> added!</span>
+          <button
+            onClick={() => { setToast(null); router.refresh(); router.push("/decks") }}
+            className="text-yellow-400 hover:text-yellow-300 font-bold transition-colors"
+          >
+            Go to My Decks →
+          </button>
+        </div>
+      )}
 
       {/* Duplicate name modal */}
       {modal && (
