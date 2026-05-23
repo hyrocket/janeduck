@@ -17,7 +17,7 @@ export default async function DeckDetailPage({ params }: Props) {
   const userId = session?.user?.id ?? null
 
   const [deckRows, cardRows] = await Promise.all([
-    sql`SELECT id, name, description, level, card_count FROM decks WHERE id = ${deckId} LIMIT 1`,
+    sql`SELECT id, name, description, level, card_count, deck_type, owner_id, icon FROM decks WHERE id = ${deckId} LIMIT 1`,
     sql`
       SELECT
         c.id, c.word, c.definition, c.part_of_speech, c.pronunciation, c.order_in_deck,
@@ -36,12 +36,14 @@ export default async function DeckDetailPage({ params }: Props) {
 
   const deck = deckRows[0]
   const cards = cardRows as DeckCard[]
+  const isOwner =
+    deck.deck_type === "user" && userId !== null && (deck.owner_id as string) === userId
 
   return (
     <main className="min-h-screen bg-yellow-50">
       <div className="max-w-lg mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        {/* JaneDuck logo */}
+        <div className="flex items-center justify-between mb-6">
           <Link href="/">
             <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
               JaneDuck
@@ -50,23 +52,18 @@ export default async function DeckDetailPage({ params }: Props) {
           </Link>
         </div>
 
-        {/* Back + Deck title */}
-        <div className="flex items-center gap-3 mb-6">
-          <Link
-            href="/decks"
-            className="text-gray-400 hover:text-gray-600 active:scale-90 transition-transform p-1 -ml-1"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </Link>
-          <div className="flex-1">
-            <h2 className="text-lg font-bold text-gray-800">{deck.name as string}</h2>
-            <p className="text-xs text-gray-400">{cards.length} words</p>
-          </div>
-        </div>
-
-        <DeckDetailClient deckId={deckId} cards={cards} />
+        <DeckDetailClient
+          deck={{
+            id: deck.id as string,
+            name: deck.name as string,
+            description: deck.description as string | null,
+            level: deck.level as number,
+            card_count: deck.card_count as number,
+            icon: deck.icon as string | null,
+          }}
+          cards={cards}
+          isOwner={isOwner}
+        />
       </div>
     </main>
   )

@@ -67,6 +67,7 @@ export default async function QuickReviewPage({ searchParams }: Props) {
           cards={queue}
           deckName={deckName}
           isAuthed={!!userId}
+          backHref={`/deck/${deckId}`}
         />
       </div>
     </main>

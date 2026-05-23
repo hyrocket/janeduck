@@ -14,11 +14,18 @@ const COVER_STYLES: { gradient: string; emoji: string }[] = [
   { gradient: "from-rose-400 to-red-500",      emoji: "📕" },
 ]
 
-function DeckCover({ level }: { level: number }) {
+function DeckCover({ level, icon }: { level: number; icon?: string | null }) {
   const style = COVER_STYLES[(level - 1) % COVER_STYLES.length] ?? COVER_STYLES[0]
+  if (icon?.startsWith("data:")) {
+    return (
+      <div className="w-14 h-[4.5rem] rounded-xl overflow-hidden shrink-0 shadow-sm">
+        <img src={icon} alt="" className="w-full h-full object-cover" />
+      </div>
+    )
+  }
   return (
     <div className={`w-14 h-[4.5rem] rounded-xl bg-gradient-to-br ${style.gradient} flex items-center justify-center text-2xl shrink-0 shadow-sm`}>
-      {style.emoji}
+      {icon ?? style.emoji}
     </div>
   )
 }
@@ -29,12 +36,12 @@ export default async function DecksPage() {
 
   const [decks, masteryRows] = await Promise.all([
     userId ? sql`
-      SELECT id, name, description, level, card_count
+      SELECT id, name, description, level, card_count, icon
       FROM decks
       WHERE owner_id = ${userId} AND deck_type = 'user'
       ORDER BY level, name
     ` : sql`
-      SELECT id, name, description, level, card_count
+      SELECT id, name, description, level, card_count, icon
       FROM decks
       WHERE deck_type = 'library' AND is_default = true
       ORDER BY level, name
@@ -148,7 +155,7 @@ export default async function DecksPage() {
                     href={`/deck/${deck.id}`}
                     className="flex items-center gap-4 bg-white rounded-2xl shadow-sm px-4 py-4 hover:shadow-md active:shadow-sm transition-shadow"
                   >
-                    <DeckCover level={deck.level as number} />
+                    <DeckCover level={deck.level as number} icon={deck.icon as string | null} />
                     <div className="flex-1 min-w-0 pr-8">
                       <div className="flex items-start justify-between gap-2">
                         <h3 className="font-semibold text-gray-800 text-sm leading-snug">
@@ -187,6 +194,19 @@ export default async function DecksPage() {
               )
             })}
           </div>
+        )}
+
+        {/* Add from Library CTA — logged-in users only */}
+        {userId && (
+          <Link
+            href="/library"
+            className="mt-6 flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-yellow-300 rounded-2xl text-yellow-600 text-sm font-semibold hover:bg-yellow-50 hover:border-yellow-400 transition-all active:scale-95"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Add deck from Library
+          </Link>
         )}
       </div>
     </main>
