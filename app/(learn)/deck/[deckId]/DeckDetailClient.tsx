@@ -7,6 +7,7 @@ import { MasteryBar } from "@/components/ui/MasteryBar"
 import { CardEditSheet, type CardFormValues } from "@/components/cards/CardEditSheet"
 import { DeckInfoEditSheet } from "@/components/cards/DeckInfoEditSheet"
 import { DeckIconPicker } from "@/components/cards/DeckIconPicker"
+import { BulkImportSheet } from "@/components/cards/BulkImportSheet"
 import type { SelfEvalRating } from "@/lib/types"
 
 export interface DeckCard {
@@ -61,8 +62,9 @@ export function DeckDetailClient({
   const [editMode, setEditMode]     = useState(false)
   const [cardSheet, setCardSheet]   = useState<CardSheetState>(null)
   const [infoSheet, setInfoSheet]   = useState(false)
-  const [iconPicker, setIconPicker] = useState(false)
+  const [iconPicker, setIconPicker]   = useState(false)
   const [currentIcon, setCurrentIcon] = useState<string | null>(deck.icon)
+  const [bulkSheet, setBulkSheet]     = useState(false)
 
   // Progress computed from cards already fetched
   const studied  = cards.filter(c => c.mastery_level !== null).length
@@ -359,12 +361,20 @@ export function DeckDetailClient({
           onSaved={handleInfoSaved}
         />
       )}
+      {bulkSheet && (
+        <BulkImportSheet
+          deckId={deck.id}
+          onClose={() => setBulkSheet(false)}
+          onImported={() => { setBulkSheet(false); router.refresh() }}
+        />
+      )}
       {cardSheet && (
         <CardEditSheet
           deckId={deck.id}
           initial={cardSheetInitial}
           onClose={() => setCardSheet(null)}
           onSaved={handleCardSaved}
+          onSwitchToBulk={cardSheet.mode === "add" ? () => { setCardSheet(null); setBulkSheet(true) } : undefined}
         />
       )}
     </>

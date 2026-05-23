@@ -21,9 +21,10 @@ interface Props {
   initial?: CardFormValues | null
   onClose: () => void
   onSaved: (historyReset?: boolean) => void
+  onSwitchToBulk?: () => void
 }
 
-export function CardEditSheet({ deckId, initial, onClose, onSaved }: Props) {
+export function CardEditSheet({ deckId, initial, onClose, onSaved, onSwitchToBulk }: Props) {
   const isEdit = !!initial?.id
   const wordRef = useRef<HTMLInputElement>(null)
 
@@ -160,11 +161,25 @@ export function CardEditSheet({ deckId, initial, onClose, onSaved }: Props) {
             <h2 className="text-lg font-bold text-gray-800">
               {isEdit ? "Edit Word" : "Add Word"}
             </h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 transition-colors">
+            <div className="flex items-center gap-2">
+              {/* Bulk import shortcut — add mode only */}
+              {!isEdit && onSwitchToBulk && (
+                <button
+                  onClick={onSwitchToBulk}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-yellow-600 bg-yellow-50 hover:bg-yellow-100 px-3 py-1.5 rounded-full transition-all"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                  </svg>
+                  Import list
+                </button>
+              )}
+              <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
+            </div>
           </div>
 
           {/* Required fields */}
