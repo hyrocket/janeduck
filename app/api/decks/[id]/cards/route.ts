@@ -62,13 +62,14 @@ export async function GET(
   const session = await auth()
   const deckId = params.id
 
-  // Base card query — include pronunciation
   const cards = await sql`
-    SELECT id, word, definition, part_of_speech, pronunciation,
-           example_sentences, difficulty_band, order_in_deck
-    FROM cards
-    WHERE deck_id = ${deckId}
-    ORDER BY order_in_deck
+    SELECT c.id, c.word, c.definition, c.part_of_speech, c.pronunciation,
+           c.example_sentences, c.difficulty_band, c.order_in_deck,
+           wa.audio_url
+    FROM cards c
+    LEFT JOIN word_audio wa ON wa.word = LOWER(TRIM(c.word))
+    WHERE c.deck_id = ${deckId}
+    ORDER BY c.order_in_deck
   `
 
   if (!session?.user?.id || cards.length === 0) {

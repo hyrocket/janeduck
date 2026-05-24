@@ -19,9 +19,11 @@ export default async function StarredReviewPage({ searchParams }: { searchParams
       c.id, c.word, c.definition, c.part_of_speech, c.pronunciation,
       c.example_sentences,
       uc.mastery_level, uc.last_self_eval_rating,
-      uc.writing_attempts_count, uc.last_reviewed_at, uc.is_starred
+      uc.writing_attempts_count, uc.last_reviewed_at, uc.is_starred,
+      wa.audio_url
     FROM user_cards uc
     JOIN cards c ON c.id = uc.card_id
+    LEFT JOIN word_audio wa ON wa.word = LOWER(TRIM(c.word))
     WHERE uc.user_id   = ${userId}
       AND uc.is_starred = true
     ORDER BY uc.starred_at DESC
@@ -47,6 +49,7 @@ export default async function StarredReviewPage({ searchParams }: { searchParams
           part_of_speech:   r.part_of_speech as string | null,
           pronunciation:    r.pronunciation as string | null,
           example_sentences: r.example_sentences as { sentence: string; context?: string }[] | null,
+          audio_url:        r.audio_url as string | null,
           user_card: {
             mastery_level:         r.mastery_level as number,
             is_starred:            true,

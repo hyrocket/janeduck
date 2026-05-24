@@ -15,6 +15,7 @@ interface CardData {
   part_of_speech: string | null
   pronunciation: string | null
   example_sentences: { sentence: string; context?: string }[] | null
+  audio_url: string | null
   user_card: null | {
     mastery_level: number
     is_starred: boolean
@@ -238,6 +239,7 @@ export default function QuickReviewClient({ cards, deckName, isAuthed, backHref 
               part_of_speech={card.part_of_speech}
               pronunciation={card.pronunciation}
               example_sentences={card.example_sentences}
+              audio_url={card.audio_url}
               isStarred={isStarred}
               onStar={handleStar}
               onSwipeLeft={goPrev}

@@ -22,11 +22,13 @@ export default async function QuickReviewPage({ searchParams }: Props) {
   const [deckRows, cards] = await Promise.all([
     sql`SELECT name FROM decks WHERE id = ${deckId} LIMIT 1`,
     sql`
-      SELECT id, word, definition, part_of_speech, pronunciation,
-             example_sentences, difficulty_band, order_in_deck
-      FROM cards
-      WHERE deck_id = ${deckId}
-      ORDER BY order_in_deck
+      SELECT c.id, c.word, c.definition, c.part_of_speech, c.pronunciation,
+             c.example_sentences, c.difficulty_band, c.order_in_deck,
+             wa.audio_url
+      FROM cards c
+      LEFT JOIN word_audio wa ON wa.word = LOWER(TRIM(c.word))
+      WHERE c.deck_id = ${deckId}
+      ORDER BY c.order_in_deck
     `,
   ])
 
@@ -85,6 +87,7 @@ interface CardRow {
   example_sentences: { sentence: string; context?: string }[] | null
   difficulty_band: string | null
   order_in_deck: number
+  audio_url: string | null
 }
 
 interface UcRow {
