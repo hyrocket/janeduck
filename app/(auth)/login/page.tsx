@@ -10,7 +10,7 @@ export default function LoginPage() {
           <Image src="/logo-small.png" alt="" width={36} height={36} />
         </h1>
         <p className="text-center text-gray-500 text-sm mb-8">
-          Learn English words by writing, not memorizing
+          Words you know, turned into words you use.
         </p>
         <form
           action={async () => {

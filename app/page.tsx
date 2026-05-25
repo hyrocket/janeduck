@@ -34,9 +34,8 @@ export default async function LandingPage() {
         </div>
 
         <h1 className="text-4xl font-extrabold text-gray-800 mb-3">JaneDuck</h1>
-        <p className="text-lg text-gray-500 max-w-xs leading-relaxed">
-          Micro Writing Coach for Secondary Students
-        </p>
+        <p className="text-xl font-bold text-gray-700 mb-1">Vocabulary in action.</p>
+        <p className="text-sm text-gray-400">Micro writing coach for English learners.</p>
 
         {/* Features */}
         <div className="mt-10 space-y-3 w-full max-w-xs text-left">
