@@ -1,26 +1,44 @@
 import { sql } from "@/lib/db"
 import { auth, signOut } from "@/auth"
+import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { LibraryClient } from "./LibraryClient"
+import { LibraryDeckDetailClient, type LibraryCard } from "./LibraryDeckDetailClient"
 
 export const dynamic = "force-dynamic"
 
-export default async function LibraryPage() {
+interface Props {
+  params: { deckId: string }
+}
+
+export default async function LibraryDeckDetailPage({ params }: Props) {
+  const { deckId } = params
   const session = await auth()
 
-  const decks = await sql`
-    SELECT id, name, description, level, card_count
-    FROM decks
-    WHERE deck_type = 'library'
-    ORDER BY level, name
-  `
+  const [deckRows, cardRows] = await Promise.all([
+    sql`
+      SELECT id, name, description, level, card_count
+      FROM decks
+      WHERE id = ${deckId} AND deck_type = 'library'
+      LIMIT 1
+    `,
+    sql`
+      SELECT id, word, definition, part_of_speech, pronunciation, order_in_deck
+      FROM cards
+      WHERE deck_id = ${deckId}
+      ORDER BY order_in_deck
+    `,
+  ])
+
+  if (deckRows.length === 0) notFound()
+
+  const deck = deckRows[0]
 
   return (
     <main className="min-h-screen bg-yellow-50">
       <div className="max-w-lg mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        {/* Top bar */}
+        <div className="flex items-center justify-between mb-6">
           <div>
             <Link href="/">
               <h1 className="text-xl font-bold text-yellow-500 flex items-center gap-2">
@@ -45,27 +63,15 @@ export default async function LibraryPage() {
           )}
         </div>
 
-        {/* Tabs */}
-        <div className="flex bg-white rounded-2xl p-1 shadow-sm mb-6">
-          <Link
-            href="/decks"
-            className="flex-1 text-center text-sm font-medium py-2 rounded-xl text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            My Decks
-          </Link>
-          <span className="flex-1 text-center text-sm font-bold py-2 rounded-xl bg-yellow-400 text-yellow-900">
-            Library
-          </span>
-        </div>
-
-        <p className="text-xs text-gray-400 mb-4">
-          {session
-            ? "Add a deck to start learning."
-            : "Sign in to add decks to your collection."}
-        </p>
-
-        <LibraryClient
-          decks={decks as { id: string; name: string; description: string | null; level: number; card_count: number }[]}
+        <LibraryDeckDetailClient
+          deck={{
+            id: deck.id as string,
+            name: deck.name as string,
+            description: deck.description as string | null,
+            level: deck.level as number,
+            card_count: deck.card_count as number,
+          }}
+          cards={cardRows as LibraryCard[]}
           isLoggedIn={!!session}
         />
       </div>

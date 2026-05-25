@@ -105,26 +105,31 @@ export function LibraryClient({
               key={deck.id}
               className="flex items-center gap-4 bg-white rounded-2xl shadow-sm px-4 py-4"
             >
-              <div
-                className={`w-14 h-[4.5rem] rounded-xl bg-gradient-to-br ${style.gradient} flex items-center justify-center text-2xl shrink-0 shadow-sm`}
+              <a
+                href={`/library/${deck.id}`}
+                className="flex items-center gap-4 flex-1 min-w-0"
               >
-                📗
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold text-gray-800 text-sm leading-snug">{deck.name}</h3>
-                  <span className="text-xs bg-yellow-100 text-yellow-600 font-medium px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
-                    Sec {deck.level}
-                  </span>
+                <div
+                  className={`w-14 h-[4.5rem] rounded-xl bg-gradient-to-br ${style.gradient} flex items-center justify-center text-2xl shrink-0 shadow-sm`}
+                >
+                  📗
                 </div>
-                {deck.description && (
-                  <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">
-                    {deck.description}
-                  </p>
-                )}
-                <p className="text-xs text-gray-500 mt-1">{deck.card_count} words</p>
-              </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-semibold text-gray-800 text-sm leading-snug">{deck.name}</h3>
+                    <span className="text-xs bg-yellow-100 text-yellow-600 font-medium px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
+                      Sec {deck.level}
+                    </span>
+                  </div>
+                  {deck.description && (
+                    <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">
+                      {deck.description}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">{deck.card_count} words</p>
+                </div>
+              </a>
 
               <button
                 onClick={() => handleAdd(deck.id, deck.name)}
