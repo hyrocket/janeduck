@@ -40,10 +40,12 @@ export default function FlashCard({
   const didSwipe = useRef(false)
   const [resolvedAudioUrl, setResolvedAudioUrl] = useState<string | null>(audio_url ?? null)
   const [audioLoading, setAudioLoading] = useState(false)
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null)
+  const playingRef = useRef(false)
 
-  const handlePlayAudio = async (e: React.MouseEvent | React.TouchEvent) => {
+  const handlePlayAudio = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (audioLoading) return
+    if (audioLoading || playingRef.current) return
 
     let url = resolvedAudioUrl
     if (!url) {
@@ -64,7 +66,18 @@ export default function FlashCard({
       setAudioLoading(false)
     }
 
-    if (url) new Audio(url).play()
+    if (url) {
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause()
+        currentAudioRef.current.currentTime = 0
+      }
+      const audio = new Audio(url)
+      currentAudioRef.current = audio
+      playingRef.current = true
+      audio.onended = () => { playingRef.current = false }
+      audio.onerror = () => { playingRef.current = false }
+      audio.play()
+    }
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -119,7 +132,6 @@ export default function FlashCard({
       <button
         className="absolute top-3 left-3 z-10 p-2 rounded-full transition-all duration-150 hover:scale-125 hover:bg-yellow-50 active:scale-110"
         onClick={handlePlayAudio}
-        onTouchEnd={handlePlayAudio}
         aria-label="Play pronunciation"
         disabled={audioLoading}
       >

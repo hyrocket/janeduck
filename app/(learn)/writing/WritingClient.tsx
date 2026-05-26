@@ -511,7 +511,7 @@ export default function WritingClient({ cardId, word, definition, mastery, userI
   }
 
   async function handleAction(action: UserAction) {
-    if (!threadId) return
+    if (!threadId || phase !== "awaiting_action") return
     setPhase("action_pending")
 
     try {
